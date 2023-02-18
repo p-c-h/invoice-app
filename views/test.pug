@@ -1,0 +1,10 @@
+extends layout 
+
+block content 
+  h2 this is a playground
+  if buyer 
+    | #{buyer.businessName}
+  if errors
+    ul 
+      for error in errors 
+        li!=error.msg

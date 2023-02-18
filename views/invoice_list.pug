@@ -1,0 +1,64 @@
+extends dashboard 
+
+block main
+
+  style.
+    table {
+      border-collapse: collapse;
+      border: 2px solid rgb(200,200,200);
+      letter-spacing: 1px;
+      font-size: 0.8rem;
+      width: 100%;
+    }
+
+    td, th {
+      border: 1px solid rgb(190,190,190);
+      padding: 10px 20px;
+    }
+
+    td {
+      text-align: center;
+    }
+
+  - const formatDate = d => [d.getDate().toString().padStart(2, '0'), (d.getMonth() + 1).toString().padStart(2, '0'), d.getFullYear()].join('-')
+  - const months = Array.from(Array(12).keys(), x => x + 1)
+
+
+    table
+      tr 
+        td
+          a(href=`/lista-faktur/${year - 1}/12`) <<&nbsp;12.#{year - 1}
+
+        each m in months
+          if m === month
+            td
+              a(href=`/lista-faktur/${year}/${m}` style={"color": "red"}) #{m}
+          else
+            td
+              a(href=`/lista-faktur/${year}/${m}`) #{m}
+        td
+          a(href=`/lista-faktur/${year + 1}/1`) 01.#{year + 1}&nbsp;>>
+
+    br
+
+    if results.length
+      table
+        thead
+          tr
+            th Nr faktury 
+            th Data sprzedaży
+            th Data wystawienia
+            th Kontrahent
+            th Brutto
+        tbody
+          each invoice in results
+            tr 
+              td 
+                a(href="") #{invoice.invoiceNumber}/#{month}/#{year}
+              td #{formatDate(invoice.transactionDate)}
+              td #{formatDate(invoice.dateCreated)}
+              td #{invoice.buyer.businessName}
+    else 
+      p W tym miesiącu nie wystawiono żadnych faktur.
+
+

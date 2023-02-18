@@ -1,0 +1,32 @@
+extends dashboard 
+
+block main
+
+  if errors
+    ul 
+      for error in errors 
+        li!=error.msg 
+
+  p Dane użytkownika: 
+    span(style={color: 'blue'}) #{user.username}
+  form(action='' method='POST')
+
+    label(for='businessName') Nazwa firmy: 
+    input(type='text' name='businessName' required value=user.businessName)
+
+    label(for='nip') NIP: 
+    input(type='number' name='nip' required value=user.nip)
+
+    label(for='adress') Adres:
+    input(type='text' name='adress' required value=user.adress)
+
+    label(for='areaCode') Kod pocztowy: 
+    input(type='text' name='areaCode' pattern='[0-9]{2}(-)[0-9]{3}' required value=user.areaCode)
+
+    label(for='city') Miejscowość:
+    input(type='text' name='city' required value=user.city)
+
+    label(for='bankAccountNumber') Numer konta: 
+    input(type='number' name='bankAccountNumber' required value=user.bankAccountNumber)
+
+    button(type='submit') Zapisz
