@@ -117,7 +117,13 @@ exports.invoice_create_post = [
     .trim()
     .notEmpty()
     .escape()
-    .withMessage('Pole: "Miejsce wystawienia faktury" musi być uzupełnione.'),
+    .withMessage('Pole: "Miejsce wystawienia faktury" musi być uzupełnione.')
+    .custom((value, { req }) => {
+      if (req.body.issuePlace === "Kielce") {
+        throw new Error("nie mogą być Kielce");
+      }
+      return true;
+    }),
   body("paymentMethod")
     .trim()
     .notEmpty()
@@ -151,6 +157,9 @@ exports.invoice_create_post = [
       paymentDue,
       issuePlace,
       paymentMethod,
+      netTotal,
+      taxTotal,
+      grossTotal,
     } = req.body;
 
     const invoice = new Invoice({
@@ -163,6 +172,11 @@ exports.invoice_create_post = [
       issuePlace,
       paymentMethod,
       invoiceItems: fieldsetsArr,
+      totals: {
+        netTotal,
+        taxTotal,
+        grossTotal,
+      },
     });
 
     invoice.save((err) => {
