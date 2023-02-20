@@ -346,30 +346,30 @@ function calculateFsetTotals(fsetData) {
 
 // INVOICE TOTALS v
 
-const netTotal = document.getElementById("netTotal");
-const taxTotal = document.getElementById("taxTotal");
-const grossTotal = document.getElementById("grossTotal");
+const netTotalElem = document.getElementById("netTotalElem");
+const taxTotalElem = document.getElementById("taxTotalElem");
+const grossTotalElem = document.getElementById("grossTotalElem");
 
 function displayInvoiceTotals(received) {
   if (!arguments.length) {
     const totalsArr = getFsetTotals(fieldsets);
     if (totalsArr.length === 0) {
-      netTotal.textContent =
-        taxTotal.textContent =
-        grossTotal.textContent =
+      netTotalElem.textContent =
+        taxTotalElem.textContent =
+        grossTotalElem.textContent =
           (0).toFixed(2);
       return;
     }
     const { fsetNet, fsetTax, fsetGross } = calculateInvoiceTotals(
       ...totalsArr
     );
-    netTotal.textContent = round(fsetNet);
-    taxTotal.textContent = round(fsetTax);
-    grossTotal.textContent = round(fsetGross);
+    netTotalElem.textContent = round(fsetNet);
+    taxTotalElem.textContent = round(fsetTax);
+    grossTotalElem.textContent = round(fsetGross);
   } else {
-    // netTotal.textContent = round(fsetNet);
-    // taxTotal.textContent = round(fsetTax);
-    // grossTotal.textContent = round(fsetGross);
+    // netTotalElem.textContent = round(fsetNet);
+    // taxTotalElem.textContent = round(fsetTax);
+    // grossTotalElem.textContent = round(fsetGross);
   }
 }
 
@@ -396,9 +396,15 @@ function calculateInvoiceTotals(...objs) {
 // VALIDATION STAGE v
 
 const fsetIds = document.getElementById("fsetIds");
+const netTotal = document.getElementById("netTotal");
+const taxTotal = document.getElementById("taxTotal");
+const grossTotal = document.getElementById("grossTotal");
 const invoiceForm = document.getElementById("invoiceForm");
 invoiceForm.addEventListener("submit", (e) => {
   fsetIds.value = Object.keys(fieldsets);
+  netTotal.value = netTotalElem.textContent;
+  taxTotal.value = taxTotalElem.textContent;
+  grossTotal.value = grossTotalElem.textContent;
   if (buyerId.value === "") {
     e.preventDefault();
     // change dropdown style to error-like
