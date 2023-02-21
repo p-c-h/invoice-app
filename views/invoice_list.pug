@@ -41,7 +41,7 @@ block main
 
     br
 
-    if results.length
+    if invoices.length
       table
         thead
           tr
@@ -51,13 +51,14 @@ block main
             th Kontrahent
             th Brutto
         tbody
-          each invoice in results
+          each invoice in invoices
             tr 
               td 
-                a(href="") #{invoice.invoiceNumber}/#{month}/#{year}
+                a(href=`/faktury/${invoice._id}`) #{invoice.invoiceNumber}/#{month}/#{year}
               td #{formatDate(invoice.transactionDate)}
               td #{formatDate(invoice.dateCreated)}
               td #{invoice.buyer.businessName}
+              td #{invoice.totals.grossTotal} PLN
     else 
       p W tym miesiącu nie wystawiono żadnych faktur.
 
