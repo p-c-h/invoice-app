@@ -85,6 +85,9 @@ block main
         option(value="cash") Gotówka
 
       input(type='hidden' name='fsetIds' id='fsetIds')
+      input(type='hidden' name='netTotal' id='netTotal')
+      input(type='hidden' name='taxTotal' id='taxTotal')
+      input(type='hidden' name='grossTotal' id='grossTotal')
 
       input(type="submit" id="submitButton" value="Zapisz")
 
@@ -93,11 +96,11 @@ block main
     h3 Podsumowanie faktury:
     ul(id="summary")
       li Razem netto:
-      li(id="netTotal") 0.00
+      li(id="netTotalElem") 0.00
       li VAT:
-      li(id="taxTotal") 0.00
+      li(id="taxTotalElem") 0.00
       li Razem brutto:
-      li(id="grossTotal") 0.00
+      li(id="grossTotalElem") 0.00
 
   script(defer src='/javascripts/script.js' data-city=user.city)
 
