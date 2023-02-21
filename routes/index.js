@@ -48,6 +48,8 @@ router.get("/wystaw-fakture", invoice_controller.invoice_create_get);
 
 router.post("/wystaw-fakture", invoice_controller.invoice_create_post);
 
+router.get("/faktury/:userId", invoice_controller.invoice_detail);
+
 router.post("/nowy-kontrahent", buyer_controller.buyer_create_post);
 
 router.get("/kontrahenci", buyer_controller.buyers_list);
