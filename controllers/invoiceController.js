@@ -57,7 +57,8 @@ exports.invoice_create_get = (req, res, next) => {
       if (err) {
         return next(err);
       }
-      if (results[0][0].maxNumber) {
+      // results eg: [Array(0), Array(1)]
+      if (results[0].length) {
         invoiceNumber = results[0][0].maxNumber + 1;
       } else {
         invoiceNumber = 1;
@@ -101,7 +102,15 @@ exports.invoice_create_post = [
     .notEmpty()
     .trim()
     .escape()
-    .withMessage('Pole: "Data wystawienia" musi być uzupełnione.'),
+    .withMessage('Pole: "Data wystawienia" musi być uzupełnione.')
+    .custom((value, { req }) => {
+      if (req.body.transactionDate > value) {
+        throw new Error(
+          "Data wystawienia nie może być wcześniejsza niż data sprzedaży."
+        );
+      }
+      return true;
+    }),
   body("transactionDate")
     .notEmpty()
     .trim()
@@ -111,19 +120,21 @@ exports.invoice_create_post = [
     .notEmpty()
     .trim()
     .escape()
-    .withMessage('Pole: "Termin płatności" musi być uzupełnione.'),
+    .withMessage('Pole: "Termin płatności" musi być uzupełnione.')
+    .custom((value, { req }) => {
+      if (req.body.transactionDate > value) {
+        throw new Error(
+          "Termin płatności nie może być wcześniejszy niż data sprzedaży."
+        );
+      }
+      return true;
+    }),
   body("buyerId").notEmpty().trim().escape().withMessage("Wskaż nabywcę."),
   body("issuePlace")
     .trim()
     .notEmpty()
     .escape()
-    .withMessage('Pole: "Miejsce wystawienia faktury" musi być uzupełnione.')
-    .custom((value, { req }) => {
-      if (req.body.issuePlace === "Kielce") {
-        throw new Error("nie mogą być Kielce");
-      }
-      return true;
-    }),
+    .withMessage('Pole: "Miejsce wystawienia faktury" musi być uzupełnione.'),
   body("paymentMethod")
     .trim()
     .notEmpty()
@@ -206,7 +217,7 @@ exports.invoice_list = function (req, res, next) {
     .lean()
     .sort([["invoiceNumber", "descending"]])
     .populate("buyer", "businessName")
-    .exec((err, results) => {
+    .exec((err, invoices) => {
       if (err) {
         return next(err);
       }
@@ -214,7 +225,9 @@ exports.invoice_list = function (req, res, next) {
         user: req.user,
         year,
         month,
-        results,
+        invoices,
       });
     });
 };
+
+exports.invoice_detail = function (req, res, next) {};
