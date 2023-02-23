@@ -66,7 +66,6 @@ exports.invoice_create_get = (req, res, next) => {
 
       res.render("invoice_form", {
         user: req.user,
-        invoiceData,
         dateCreated,
         transactionDate,
         ////////
@@ -231,3 +230,45 @@ exports.invoice_list = function (req, res, next) {
 };
 
 exports.invoice_detail = function (req, res, next) {};
+
+exports.invoice_update_get = function (req, res, next) {
+  async.parallel(
+    {
+      invoice(callback) {
+        Invoice.findOne({ _id: req.params.invoiceId, userId: req.user._id })
+          .populate("buyer")
+          .exec(callback);
+      },
+      buyers(callback) {
+        Buyer.find(callback);
+      },
+    },
+    (err, results) => {
+      if (err) {
+        return next(err);
+      }
+      const month = results.invoice.transactionDate.getMonth() + 1;
+      const year = results.invoice.transactionDate.getFullYear();
+      res.render("invoice_form", {
+        user: req.user,
+        invoice: results.invoice,
+        month,
+        year,
+        buyerList: results.buyers,
+      });
+    }
+  );
+
+  // Invoice.findOne(
+  //   { _id: req.params.invoiceId, userId: req.user._id },
+  //   (err, invoiceData) => {
+  //     if (err) {
+  //       return next(err);
+  //     }
+  //     return res.render("invoice_form", {
+  //       user: req.user,
+  //       invoiceData,
+  //     });
+  //   }
+  // );
+};
