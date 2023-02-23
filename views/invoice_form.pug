@@ -5,12 +5,12 @@ block main
   script(src="https://cdn.jsdelivr.net/npm/luxon@3.1.1/build/global/luxon.min.js")
 
   - const currentDate = new Date().toJSON().slice(0, 10)
+  - const formatDate = d => [ d.getFullYear(), (d.getMonth() + 1).toString().padStart(2, '0'), d.getDate().toString().padStart(2, '0')].join('-')
 
   script.
     const DateTime = luxon.DateTime;
-    const invoice_data = !{JSON.stringify(invoiceData)}
     const buyerList = !{JSON.stringify(buyerList)}
-    const rez = !{JSON.stringify(whatIsThis)}
+    //- const rez = !{JSON.stringify(whatIsThis)}
     //- const usr = !{JSON.stringify(invoiceItems)}
 
   if user.profileComplete === 0
@@ -41,8 +41,8 @@ block main
     div(id="overlay")
 
     form(action='' method='POST' id="invoiceForm" autocomplete="off")
-      p Faktura VAT nr: #{invoiceNumber}/#{month}/#{year}
-      input(type='hidden' name="invoiceNumber" value=invoiceNumber)
+      p Faktura VAT nr: #{invoice === undefined ? invoiceNumber : invoice.invoiceNumber}/#{month}/#{year}
+      input(type='hidden' name="invoiceNumber" value=(invoice === undefined ? invoiceNumber : invoice.invoiceNumber))
 
 
       div(id="buyerWrapper")
@@ -53,19 +53,19 @@ block main
       button(type="button" id="showPopupBtn") Dodaj nowego kontrahenta
 
       ul(id="buyerSpace")
-      input(type='hidden' name='buyerId' id='buyerId' value=(buyer===undefined ? '' : buyer._id))
+      input(type='hidden' name='buyerId' id='buyerId' value=(invoice===undefined ? '' : invoice.buyerId))
 
       p
         label(for='dateCreated') Data wystawienia: 
-        input(type='date' name='dateCreated' id='dateCreated' value=(dateCreated===undefined ? currentDate : dateCreated) required)
+        input(type='date' name='dateCreated' id='dateCreated' value=(invoice===undefined ? currentDate : formatDate(invoice.dateCreated)) required)
 
       p
         label(for='transactionDate') Data sprzedaży: 
-        input(type='date' name='transactionDate' id='transactionDate' value=(transactionDate===undefined ? currentDate : transactionDate) required)
+        input(type='date' name='transactionDate' id='transactionDate' value=(invoice===undefined ? currentDate : formatDate(invoice.transactionDate)) required)
 
       p
         label(for='paymentDue') Termin płatności:
-        input(type='date' name='paymentDue' id='paymentDue' value=(paymentDue===undefined ? currentDate : paymentDue) required)
+        input(type='date' name='paymentDue' id='paymentDue' value=(invoice===undefined ? currentDate : formatDate(invoice.paymentDue)) required)
 
       p
         select(id='postponeSelect' onchange='addDays(this.value)' onfocus="this.selectedIndex = -1")
@@ -75,14 +75,15 @@ block main
 
       p
         label(for='issuePlace') Miejsce wystawienia faktury: 
-        input(type='text' name='issuePlace' id='issuePlace' value=(issuePlace===undefined ? user.city : issuePlace) required)
+        input(type='text' name='issuePlace' id='issuePlace' value=(invoice===undefined ? user.city : invoice.issuePlace) required)
 
       button(type='button' id="addFsetButton" onclick='addFset()') Dodaj kolejne pole
 
       p Sposób zapłaty:
-      select(name='paymentMethod')
-        option(value="transfer") Przelew
-        option(value="cash") Gotówka
+      select(name='paymentMethod' id="paymentMethod")
+        option(value="transfer" selected=(invoice===undefined || invoice.paymentMethod==="transfer")) Przelew
+        option(value="cash" selected=(invoice && invoice.paymentMethod==="cash")) Gotówka
+
 
       input(type='hidden' name='fsetIds' id='fsetIds')
       input(type='hidden' name='netTotal' id='netTotal')
@@ -103,6 +104,3 @@ block main
       li(id="grossTotalElem") 0.00
 
   script(defer src='/javascripts/script.js' data-city=user.city)
-
-  if (invoiceData)
-    script.
