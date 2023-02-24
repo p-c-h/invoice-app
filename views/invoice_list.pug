@@ -58,7 +58,7 @@ block main
               td #{formatDate(invoice.transactionDate)}
               td #{formatDate(invoice.dateCreated)}
               td #{invoice.buyer.businessName}
-              td #{invoice.totals.grossTotal} PLN
+              td #{invoice.totals.grossTotal.toFixed(2)} PLN
     else 
       p W tym miesiącu nie wystawiono żadnych faktur.
 
