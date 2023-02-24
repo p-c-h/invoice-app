@@ -2,6 +2,7 @@ const { body, validationResult } = require("express-validator");
 const async = require("async");
 const Buyer = require("../models/buyer");
 const Invoice = require("../models/invoice");
+const invoice = require("../models/invoice");
 
 const cat = () => {
   console.log("Cats are cute!");
@@ -189,6 +190,25 @@ exports.invoice_create_post = [
       },
     });
 
+    if (typeof req.params.invoiceId !== "undefined") {
+      invoice._id = req.params.invoiceId;
+
+      Invoice.findByIdAndUpdate(
+        req.params.invoiceId,
+        invoice,
+        {},
+        (err, theivoice) => {
+          if (err) {
+            return next(err);
+          }
+          res.render("test", {
+            msg: req.params.invoiceId,
+          });
+        }
+      );
+      return;
+    }
+
     invoice.save((err) => {
       if (err) {
         res.status(500).json({ error: err });
@@ -229,7 +249,22 @@ exports.invoice_list = function (req, res, next) {
     });
 };
 
-exports.invoice_detail = function (req, res, next) {};
+exports.invoice_detail = function (req, res, next) {
+  Invoice.findOne(
+    { _id: req.params.invoiceId, userId: req.user._id },
+    (err, result) => {
+      if (err) {
+        return next(err);
+      }
+      res.render("invoice_detail", {
+        user: req.user,
+        invoice: result,
+        month: result.transactionDate.getMonth() + 1,
+        year: result.transactionDate.getFullYear(),
+      });
+    }
+  );
+};
 
 exports.invoice_update_get = function (req, res, next) {
   async.parallel(
