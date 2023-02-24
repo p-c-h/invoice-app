@@ -52,6 +52,11 @@ router.get("/faktury/:invoiceId", invoice_controller.invoice_detail);
 
 router.get("/faktury/:invoiceId/edytuj", invoice_controller.invoice_update_get);
 
+router.post(
+  "/faktury/:invoiceId/edytuj",
+  invoice_controller.invoice_create_post
+);
+
 router.post("/nowy-kontrahent", buyer_controller.buyer_create_post);
 
 router.get("/kontrahenci", buyer_controller.buyers_list);
