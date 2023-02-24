@@ -274,7 +274,7 @@ function addFset(received) {
     // const fsetTotals = calculateFsetTotals(received);
     // fieldsets[fsetId] = { ...received, totals: { fsetTotals } };
     fieldsets[fsetId] = received;
-    displayInvoiceTotals();
+    displayInvoiceTotals("any");
   } else {
     fieldsets[fsetId] = {
       itemQuantity: null,
@@ -366,10 +366,6 @@ function displayInvoiceTotals(received) {
     netTotalElem.textContent = round(fsetNet);
     taxTotalElem.textContent = round(fsetTax);
     grossTotalElem.textContent = round(fsetGross);
-  } else {
-    // netTotalElem.textContent = round(fsetNet);
-    // taxTotalElem.textContent = round(fsetTax);
-    // grossTotalElem.textContent = round(fsetGross);
   }
 }
 
@@ -413,5 +409,11 @@ invoiceForm.addEventListener("submit", (e) => {
 
 // VALIDATION STAGE ^
 
-addFset();
+if (typeof invoiceItems !== "undefined") {
+  invoiceItems.forEach((item) => {
+    addFset(item);
+  });
+} else {
+  addFset();
+}
 populateDropdown(buyerList);
