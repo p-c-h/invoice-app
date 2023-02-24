@@ -1,0 +1,38 @@
+extends dashboard 
+
+block main 
+
+  - const formatDate = d => [d.getDate().toString().padStart(2, '0'), (d.getMonth() + 1).toString().padStart(2, '0'), d.getFullYear()].join('-')
+
+  p Faktura VAT nr: #{invoice.invoiceNumber}/#{month}/#{year}
+
+  h3 Nabywca:
+  ul 
+    li #{invoice.buyer.businessName}
+    li #{invoice.buyer.nip}
+    li #{invoice.buyer.adress}
+    li #{invoice.buyer.areaCode} #{invoice.buyer.city}
+
+  p Data wystawienia:
+  p #{formatDate(invoice.dateCreated)}
+
+  p Data sprzedaży: 
+  p #{formatDate(invoice.transactionDate)}
+
+  p Termin płatności: 
+  p #{formatDate(invoice.paymentDue)}
+
+  p Miejsce wystawienia faktury:
+  p #{invoice.issuePlace}
+
+  table
+    thead 
+      tr 
+        th Nazwa towaru lub usługi 
+        th GTU 
+        th Ilość
+        th Jednostka 
+        th Cena jedn. netto
+        th Wartość netto
+        th VAT
+
