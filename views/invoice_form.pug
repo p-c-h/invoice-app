@@ -10,8 +10,10 @@ block main
   script.
     const DateTime = luxon.DateTime;
     const buyerList = !{JSON.stringify(buyerList)}
-    //- const rez = !{JSON.stringify(whatIsThis)}
-    //- const usr = !{JSON.stringify(invoiceItems)}
+
+  if invoice 
+    script.
+      const invoiceItems = !{JSON.stringify(invoice.invoiceItems)}
 
   if user.profileComplete === 0
     p Uzupełnij profil, aby móc wystawiać faktury.
@@ -53,6 +55,11 @@ block main
       button(type="button" id="showPopupBtn") Dodaj nowego kontrahenta
 
       ul(id="buyerSpace")
+        if invoice   
+          li #{invoice.buyer.businessName}
+          li NIP: #{invoice.buyer.nip}
+          li #{invoice.buyer.adress}
+          li #{invoice.buyer.areaCode} #{invoice.buyer.city} 
       input(type='hidden' name='buyerId' id='buyerId' value=(invoice===undefined ? '' : invoice.buyerId))
 
       p
@@ -86,21 +93,21 @@ block main
 
 
       input(type='hidden' name='fsetIds' id='fsetIds')
-      input(type='hidden' name='netTotal' id='netTotal')
-      input(type='hidden' name='taxTotal' id='taxTotal')
-      input(type='hidden' name='grossTotal' id='grossTotal')
+      input(type='hidden' name='netTotal' id='netTotal' value=(invoice===undefined ? '' : invoice.totals.netTotal))
+      input(type='hidden' name='taxTotal' id='taxTotal' value=(invoice===undefined ? '' : invoice.totals.taxTotal))
+      input(type='hidden' name='grossTotal' id='grossTotal' value=(invoice===undefined ? '' : invoice.totals.grossTotal))
 
       input(type="submit" id="submitButton" value="Zapisz")
-
-
+      if invoice
+        input(type="button" onclick=`location.href="/faktury/${invoice._id}";` value="Anuluj")
 
     h3 Podsumowanie faktury:
     ul(id="summary")
       li Razem netto:
-      li(id="netTotalElem") 0.00
+      li(id="netTotalElem") #{invoice !== undefined ? invoice.totals.netTotal.toFixed(2) : "0.00"}
       li VAT:
-      li(id="taxTotalElem") 0.00
+      li(id="taxTotalElem") #{invoice !== undefined ? invoice.totals.taxTotal.toFixed(2) : "0.00"}
       li Razem brutto:
-      li(id="grossTotalElem") 0.00
+      li(id="grossTotalElem") #{invoice !== undefined ? invoice.totals.grossTotal.toFixed(2) : "0.00"}
 
   script(defer src='/javascripts/script.js' data-city=user.city)
