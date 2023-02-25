@@ -250,9 +250,9 @@ exports.invoice_list = function (req, res, next) {
 };
 
 exports.invoice_detail = function (req, res, next) {
-  Invoice.findOne(
-    { _id: req.params.invoiceId, userId: req.user._id },
-    (err, result) => {
+  Invoice.findOne({ _id: req.params.invoiceId, userId: req.user._id })
+    .populate("buyer")
+    .exec((err, result) => {
       if (err) {
         return next(err);
       }
@@ -262,8 +262,7 @@ exports.invoice_detail = function (req, res, next) {
         month: result.transactionDate.getMonth() + 1,
         year: result.transactionDate.getFullYear(),
       });
-    }
-  );
+    });
 };
 
 exports.invoice_update_get = function (req, res, next) {
