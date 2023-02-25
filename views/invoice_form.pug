@@ -40,7 +40,7 @@ block main
         button(type="submit" id="confirmPopupBtn") Zatwierdź
         button(type="button" id="closePopupBtn") Anuluj
 
-    div(id="overlay")
+    //- div(id="overlay")
 
     form(action='' method='POST' id="invoiceForm" autocomplete="off")
       p Faktura VAT nr: #{invoice === undefined ? invoiceNumber : invoice.invoiceNumber}/#{month}/#{year}
@@ -60,7 +60,7 @@ block main
           li NIP: #{invoice.buyer.nip}
           li #{invoice.buyer.adress}
           li #{invoice.buyer.areaCode} #{invoice.buyer.city} 
-      input(type='hidden' name='buyerId' id='buyerId' value=(invoice===undefined ? '' : invoice.buyerId))
+      input(type='hidden' name='buyerId' id='buyerId' value=(invoice===undefined ? '' : invoice.buyer._id))
 
       p
         label(for='dateCreated') Data wystawienia: 
