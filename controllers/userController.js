@@ -119,3 +119,32 @@ exports.user_detail_update_post = [
     });
   },
 ];
+
+exports.user_accountingdate_update = [
+  body("accountingDate")
+    .notEmpty()
+    .trim()
+    .escape()
+    .withMessage('Pole: "Miesiąc księgowy" musi być uzupełnione.'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    const user = new User({
+      accountingDate: req.body.accountingDate,
+      _id: req.user._id,
+    });
+    if (!errors.isEmpty()) {
+      res.render("invoice_form", {
+        user: req.user,
+        errors: errors.array(),
+      });
+      return;
+    }
+    User.findByIdAndUpdate(req.user.id, user, {}, (err) => {
+      if (err) {
+        return next(err);
+      }
+
+      res.redirect("/uzytkownik");
+    });
+  },
+];
