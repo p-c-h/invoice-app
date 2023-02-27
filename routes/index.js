@@ -65,4 +65,6 @@ router.get("/uzytkownik", user_controller.user_detail_get);
 
 router.post("/uzytkownik", user_controller.user_detail_update_post);
 
+router.post("/miesiac-ksiegowy", user_controller.user_accountingdate_update);
+
 module.exports = router;
