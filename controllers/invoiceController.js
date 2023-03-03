@@ -4,9 +4,41 @@ const Buyer = require("../models/buyer");
 const Invoice = require("../models/invoice");
 const invoice = require("../models/invoice");
 
-const cat = () => {
-  console.log("Cats are cute!");
-};
+function adjacent(date) {
+  const months = [
+    "styczeń",
+    "luty",
+    "marzec",
+    "kwiecień",
+    "maj",
+    "czerwiec",
+    "lipiec",
+    "sierpień",
+    "wrzesień",
+    "październik",
+    "listopad",
+    "grudzień",
+  ];
+  let month = date.getMonth() + 2; //Dla samego getMonth() jest 6 czyli lipiec, dodac jeden jest 7 czyli sierpien
+  let year = date.getFullYear();
+  const arr = [];
+  if (month > 11) {
+    month = 0;
+    year++;
+  }
+  for (n = 0; n < 4; n++) {
+    month--;
+    if (month < 0) {
+      month = 11;
+      year--;
+    }
+    arr.push({
+      word: months[month] + " " + year,
+      num: year + "-" + month,
+    });
+  }
+  return arr;
+}
 
 exports.invoice_create_get = (req, res, next) => {
   const accountingDate = req.user.accountingDate;
@@ -75,8 +107,10 @@ exports.invoice_create_get = (req, res, next) => {
         whatIsThis: results,
         month: month + 1,
         year,
+        monthsArr: adjacent(accountingDate),
         ////////
         cat: null,
+        accountingDate,
       });
     }
   );
