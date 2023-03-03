@@ -48,6 +48,7 @@ exports.user_create_post = [
         areaCode: null,
         city: null,
         bankAccountNumber: null,
+        profileComplete: false,
       });
 
       user.save((err) => {
@@ -91,6 +92,8 @@ exports.user_detail_update_post = [
 
   (req, res, next) => {
     const errors = validationResult(req);
+    const td = new Date();
+    td.setDate(5); // 1 hour time difference compared to UTC. I have to account for my locale because mongodb store date as UTC timestamp.
 
     const user = new User({
       businessName: req.body.businessName,
@@ -99,7 +102,8 @@ exports.user_detail_update_post = [
       areaCode: req.body.areaCode,
       city: req.body.city,
       bankAccountNumber: req.body.bankAccountNumber,
-      profileComplete: 1,
+      accountingDate: td,
+      profileComplete: true,
       _id: req.user.id,
     });
 
@@ -128,8 +132,9 @@ exports.user_accountingdate_update = [
     .withMessage('Pole: "Miesiąc księgowy" musi być uzupełnione.'),
   (req, res, next) => {
     const errors = validationResult(req);
+    const arr = req.body.accountingDate.split("-");
     const user = new User({
-      accountingDate: req.body.accountingDate,
+      accountingDate: new Date(arr[0], arr[1], 5),
       _id: req.user._id,
     });
     if (!errors.isEmpty()) {
@@ -143,8 +148,7 @@ exports.user_accountingdate_update = [
       if (err) {
         return next(err);
       }
-
-      res.redirect("/uzytkownik");
+      res.redirect("/wystaw-fakture");
     });
   },
 ];
