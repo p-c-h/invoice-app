@@ -31,12 +31,10 @@ const UserSchema = new Schema({
   },
   accountingDate: {
     type: Date,
-    default: Date.now,
   },
   profileComplete: {
-    type: Number,
+    type: Boolean,
     required: true,
-    default: 0,
   },
 });
 
