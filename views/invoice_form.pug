@@ -15,7 +15,7 @@ block main
     script.
       const invoiceItems = !{JSON.stringify(invoice.invoiceItems)}
 
-  if user.profileComplete === 0
+  if user.profileComplete === false
     p Uzupełnij profil, aby móc wystawiać faktury.
     a(href='/uzytkownik' style={display:'block', 'text-align':'center'}) Kliknij tu
   else
@@ -40,7 +40,12 @@ block main
         button(type="submit" id="confirmPopupBtn") Zatwierdź
         button(type="button" id="closePopupBtn") Anuluj
 
-    //- div(id="overlay")
+    if monthsArr
+      form(action="/miesiac-ksiegowy" method="POST")
+        p Miesiąc księgowy: 
+        select(name="accountingDate" onchange="this.closest('form').submit()")
+          each item in monthsArr
+            option(value=item.num selected=(item === monthsArr[1])) #{item.word}
 
     form(action='' method='POST' id="invoiceForm" autocomplete="off")
       p Faktura VAT nr: #{invoice === undefined ? invoiceNumber : invoice.invoiceNumber}/#{month}/#{year}
