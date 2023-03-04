@@ -207,8 +207,19 @@ exports.invoice_create_post = [
       grossTotal,
     } = req.body;
 
+    const { businessName, nip, adress, areaCode, city, bankAccountNumber } =
+      req.user;
+
     const invoice = new Invoice({
       userId: req.user._id,
+      userDetails: {
+        businessName,
+        nip,
+        adress,
+        areaCode,
+        city,
+        bankAccountNumber,
+      },
       invoiceNumber,
       dateCreated,
       transactionDate,
