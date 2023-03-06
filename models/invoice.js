@@ -24,6 +24,26 @@ const Schema = mongoose.Schema;
 
 const InvoiceSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  userDetails: {
+    businessName: {
+      type: String,
+    },
+    nip: {
+      type: Number,
+    },
+    adress: {
+      type: String,
+    },
+    areaCode: {
+      type: String,
+    },
+    city: {
+      type: String,
+    },
+    bankAccountNumber: {
+      type: String,
+    },
+  },
   invoiceNumber: { type: Number, required: true },
   dateCreated: { type: Date, default: Date.now, required: true },
   transactionDate: { type: Date, default: Date.now, required: true },
@@ -32,9 +52,26 @@ const InvoiceSchema = new Schema({
     required: true,
   },
   buyer: {
-    type: Schema.Types.ObjectId,
-    ref: "Buyer",
-    // required: true,
+    businessName: {
+      type: String,
+      required: true,
+    },
+    nip: {
+      type: Number,
+      required: true,
+    },
+    adress: {
+      type: String,
+      required: true,
+    },
+    areaCode: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
   },
   issuePlace: {
     type: String,
