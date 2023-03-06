@@ -224,7 +224,6 @@ exports.invoice_create_post = [
       dateCreated,
       transactionDate,
       paymentDue,
-      buyer: req.body.buyerId,
       issuePlace,
       paymentMethod,
       invoiceItems: fieldsetsArr,
@@ -234,6 +233,27 @@ exports.invoice_create_post = [
         grossTotal,
       },
     });
+
+    if (req.body.buyerId !== 0) {
+      buyer.findOne(
+        {
+          userId: req.user._id,
+          _id: req.body.buyerId,
+        },
+        (err, results) => {
+          if (err) {
+            return next(err);
+          }
+          invoice.buyer = {
+            businessName: results.businessName,
+            nip: results.nip,
+            adress: results.adress,
+            areaCode: results.areaCode,
+            city: results.city,
+          };
+        }
+      );
+    }
 
     if (typeof req.params.invoiceId !== "undefined") {
       invoice._id = req.params.invoiceId;
