@@ -401,7 +401,9 @@ invoiceForm.addEventListener("submit", (e) => {
   netTotal.value = netTotalElem.textContent;
   taxTotal.value = taxTotalElem.textContent;
   grossTotal.value = grossTotalElem.textContent;
-  if (buyerId.value === "") {
+  if (typeof invoiceItems !== "undefined" && buyerId.value === "") {
+    buyerId.value = 0;
+  } else if (buyerId.value === "") {
     e.preventDefault();
     // change dropdown style to error-like
   }
