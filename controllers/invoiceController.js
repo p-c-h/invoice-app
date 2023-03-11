@@ -131,7 +131,7 @@ function validateDynamicInputs(fieldBases, data, arr) {
   });
 }
 
-exports.invoice_create_post = [
+const invoiceValidators = [
   body("dateCreated")
     .notEmpty()
     .trim()
@@ -163,7 +163,6 @@ exports.invoice_create_post = [
       }
       return true;
     }),
-  body("buyerId").notEmpty().trim().escape().withMessage("Wskaż nabywcę."),
   body("issuePlace")
     .trim()
     .notEmpty()
@@ -174,6 +173,189 @@ exports.invoice_create_post = [
     .notEmpty()
     .escape()
     .withMessage('Pole: "Sposób zapłaty" musi być uzupełnione.'),
+];
+
+exports.invoice_create_post = [
+  ...invoiceValidators,
+  body("buyerId").notEmpty().trim().escape().withMessage("Wskaż nabywcę."),
+
+  (req, res, next) => {
+    const fieldsetsArr = [];
+    validateDynamicInputs(
+      [
+        "itemName",
+        "gtu",
+        "itemQuantity",
+        "unit",
+        "singleItemPrice",
+        "priceType",
+        "taxRate",
+      ],
+      req.body,
+      fieldsetsArr
+    );
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {
+      invoiceNumber,
+      dateCreated,
+      transactionDate,
+      paymentDue,
+      issuePlace,
+      paymentMethod,
+      netTotal,
+      taxTotal,
+      grossTotal,
+    } = req.body;
+
+    const { businessName, nip, adress, areaCode, city, bankAccountNumber } =
+      req.user;
+
+    Buyer.findOne({
+      userId: req.user._id,
+      _id: req.body.buyerId,
+    }).exec(function (err, results) {
+      if (err) {
+        return next(err);
+      }
+      const invoice = new Invoice({
+        userId: req.user._id,
+        userDetails: {
+          businessName,
+          nip,
+          adress,
+          areaCode,
+          city,
+          bankAccountNumber,
+        },
+        invoiceNumber,
+        dateCreated,
+        transactionDate,
+        paymentDue,
+        buyer: {
+          businessName: results.businessName,
+          nip: results.nip,
+          adress: results.adress,
+          areaCode: results.areaCode,
+          city: results.city,
+        },
+        issuePlace,
+        paymentMethod,
+        invoiceItems: fieldsetsArr,
+        totals: {
+          netTotal,
+          taxTotal,
+          grossTotal,
+        },
+      });
+      invoice.save((err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err });
+        } else {
+          res.redirect(`/faktury/${result._id}`);
+        }
+      });
+    });
+
+    // if (typeof req.params.invoiceId !== "undefined") {
+    //   invoice._id = req.params.invoiceId;
+    //   Invoice.findByIdAndUpdate(
+    //     req.params.invoiceId,
+    //     invoice,
+    //     {},
+    //     (err, theivoice) => {
+    //       if (err) {
+    //         return next(err);
+    //       }
+    //       res.redirect(`/faktury/${req.params.invoiceId}`);
+    //     }
+    //   );
+    //   return;
+    // }
+  },
+];
+
+exports.invoice_list = function (req, res, next) {
+  const year = Number(req.params.year);
+  const month = Number(req.params.month);
+  const start = new Date(year, month - 1, 1);
+  const end = new Date(year, month, 0);
+
+  Invoice.find({
+    userId: req.user._id,
+    transactionDate: {
+      $gte: start,
+      $lt: end,
+    },
+  })
+    .lean()
+    .sort([["invoiceNumber", "descending"]])
+    .exec((err, invoices) => {
+      if (err) {
+        return next(err);
+      }
+      res.render("invoice_list", {
+        user: req.user,
+        year,
+        month,
+        invoices,
+      });
+    });
+};
+
+exports.invoice_detail = function (req, res, next) {
+  Invoice.findOne({ _id: req.params.invoiceId, userId: req.user._id })
+    .populate("buyer")
+    .exec((err, result) => {
+      if (err) {
+        return next(err);
+      }
+      res.render("invoice_detail", {
+        user: req.user,
+        invoice: result,
+        month: result.transactionDate.getMonth() + 1,
+        year: result.transactionDate.getFullYear(),
+      });
+    });
+};
+
+exports.invoice_update_get = function (req, res, next) {
+  async.parallel(
+    {
+      invoice(callback) {
+        Invoice.findOne({
+          _id: req.params.invoiceId,
+          userId: req.user._id,
+        }).exec(callback);
+      },
+      buyers(callback) {
+        Buyer.find(callback);
+      },
+    },
+    (err, results) => {
+      if (err) {
+        return next(err);
+      }
+      const month = results.invoice.transactionDate.getMonth() + 1;
+      const year = results.invoice.transactionDate.getFullYear();
+      res.render("invoice_form", {
+        user: req.user,
+        invoice: results.invoice,
+        month,
+        year,
+        buyerList: results.buyers,
+      });
+    }
+  );
+};
+
+exports.invoice_update_post = [
+  ...invoiceValidators,
+  body("buyerId").trim().escape(),
   (req, res, next) => {
     const fieldsetsArr = [];
     validateDynamicInputs(
@@ -211,6 +393,7 @@ exports.invoice_create_post = [
       req.user;
 
     const invoice = new Invoice({
+      _id: req.params.invoiceId,
       userId: req.user._id,
       userDetails: {
         businessName,
@@ -234,140 +417,45 @@ exports.invoice_create_post = [
       },
     });
 
-    if (req.body.buyerId !== 0) {
-      buyer.findOne(
-        {
-          userId: req.user._id,
-          _id: req.body.buyerId,
-        },
-        (err, results) => {
+    if (req.body.buyerId) {
+      Buyer.findOne({
+        userId: req.user._id,
+        _id: req.body.buyerId,
+      }).exec(function (err, results) {
+        if (err) {
+          return next(err);
+        }
+        invoice.buyer = {
+          businessName: results.businessName,
+          nip: results.nip,
+          adress: results.adress,
+          areaCode: results.areaCode,
+          city: results.city,
+        };
+
+        Invoice.findByIdAndUpdate(req.params.invoiceId, invoice, {}, (err) => {
           if (err) {
             return next(err);
           }
-          invoice.buyer = {
-            businessName: results.businessName,
-            nip: results.nip,
-            adress: results.adress,
-            areaCode: results.areaCode,
-            city: results.city,
-          };
-        }
-      );
-    }
-
-    if (typeof req.params.invoiceId !== "undefined") {
-      invoice._id = req.params.invoiceId;
-
-      Invoice.findByIdAndUpdate(
-        req.params.invoiceId,
-        invoice,
-        {},
-        (err, theivoice) => {
-          if (err) {
-            return next(err);
-          }
-          res.render("test", {
-            msg: req.params.invoiceId,
-          });
-        }
-      );
-      return;
-    }
-
-    invoice.save((err) => {
-      if (err) {
-        res.status(500).json({ error: err });
-      }
-      res.json({
-        invoice,
+          return res.redirect(`/faktury/${req.params.invoiceId}`);
+        });
       });
-    });
+    } else {
+      Invoice.findByIdAndUpdate(req.params.invoiceId, invoice, {}, (err) => {
+        if (err) {
+          return next(err);
+        }
+        return res.redirect(`/faktury/${req.params.invoiceId}`);
+      });
+    }
   },
 ];
 
-exports.invoice_list = function (req, res, next) {
-  const year = Number(req.params.year);
-  const month = Number(req.params.month);
-  const start = new Date(year, month - 1, 1);
-  const end = new Date(year, month, 0);
-
-  Invoice.find({
-    userId: req.user._id,
-    transactionDate: {
-      $gte: start,
-      $lt: end,
-    },
-  })
-    .lean()
-    .sort([["invoiceNumber", "descending"]])
-    .populate("buyer", "businessName")
-    .exec((err, invoices) => {
-      if (err) {
-        return next(err);
-      }
-      res.render("invoice_list", {
-        user: req.user,
-        year,
-        month,
-        invoices,
-      });
-    });
-};
-
-exports.invoice_detail = function (req, res, next) {
-  Invoice.findOne({ _id: req.params.invoiceId, userId: req.user._id })
-    .populate("buyer")
-    .exec((err, result) => {
-      if (err) {
-        return next(err);
-      }
-      res.render("invoice_detail", {
-        user: req.user,
-        invoice: result,
-        month: result.transactionDate.getMonth() + 1,
-        year: result.transactionDate.getFullYear(),
-      });
-    });
-};
-
-exports.invoice_update_get = function (req, res, next) {
-  async.parallel(
-    {
-      invoice(callback) {
-        Invoice.findOne({ _id: req.params.invoiceId, userId: req.user._id })
-          .populate("buyer")
-          .exec(callback);
-      },
-      buyers(callback) {
-        Buyer.find(callback);
-      },
-    },
-    (err, results) => {
-      if (err) {
-        return next(err);
-      }
-      const month = results.invoice.transactionDate.getMonth() + 1;
-      const year = results.invoice.transactionDate.getFullYear();
-      res.render("invoice_form", {
-        user: req.user,
-        invoice: results.invoice,
-        month,
-        year,
-        buyerList: results.buyers,
-      });
+exports.invoice_delete_post = (req, res, next) => {
+  Invoice.findByIdAndRemove(req.params.invoiceId, (err) => {
+    if (err) {
+      return next(err);
     }
-  );
-
-  // Invoice.findOne(
-  //   { _id: req.params.invoiceId, userId: req.user._id },
-  //   (err, invoiceData) => {
-  //     if (err) {
-  //       return next(err);
-  //     }
-  //     return res.render("invoice_form", {
-  //       user: req.user,
-  //       invoiceData,
-  //     });
-  //   }
-  // );
+    res.redirect("");
+  });
 };
