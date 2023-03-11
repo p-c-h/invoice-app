@@ -400,13 +400,6 @@ invoiceForm.addEventListener("submit", (e) => {
   fsetIds.value = Object.keys(fieldsets);
   netTotal.value = netTotalElem.textContent;
   taxTotal.value = taxTotalElem.textContent;
-  grossTotal.value = grossTotalElem.textContent;
-  if (typeof invoiceItems !== "undefined" && buyerId.value === "") {
-    buyerId.value = 0;
-  } else if (buyerId.value === "") {
-    e.preventDefault();
-    // change dropdown style to error-like
-  }
 });
 
 // VALIDATION STAGE ^
