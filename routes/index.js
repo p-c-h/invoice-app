@@ -5,6 +5,10 @@ const user_controller = require("../controllers/userController");
 const invoice_controller = require("../controllers/invoiceController");
 const buyer_controller = require("../controllers/buyerController");
 
+//
+const test_controller = require("../controllers/testController");
+//
+
 const User = require("../models/user");
 
 router.get("/", function (req, res, next) {
@@ -54,8 +58,10 @@ router.get("/faktury/:invoiceId/edytuj", invoice_controller.invoice_update_get);
 
 router.post(
   "/faktury/:invoiceId/edytuj",
-  invoice_controller.invoice_create_post
+  invoice_controller.invoice_update_post
 );
+
+router.post("/faktury/:invoiceId/usun", invoice_controller.invoice_delete_post);
 
 router.post("/nowy-kontrahent", buyer_controller.buyer_create_post);
 
@@ -66,5 +72,9 @@ router.get("/uzytkownik", user_controller.user_detail_get);
 router.post("/uzytkownik", user_controller.user_detail_update_post);
 
 router.post("/miesiac-ksiegowy", user_controller.user_accountingdate_update);
+
+router.get("/test", test_controller.test_create_get);
+
+router.post("/test", test_controller.test_create_post);
 
 module.exports = router;
