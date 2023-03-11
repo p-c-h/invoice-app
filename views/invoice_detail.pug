@@ -19,6 +19,10 @@ block main
       text-align: center;
     }
 
+    #deletePopup {
+      display: none;
+    }
+
   - const formatDate = d => [d.getDate().toString().padStart(2, '0'), (d.getMonth() + 1).toString().padStart(2, '0'), d.getFullYear()].join('-')
 
   p Faktura VAT nr: #{invoice.invoiceNumber}/#{month}/#{year}
@@ -72,3 +76,10 @@ block main
     li #{invoice.totals.grossTotal.toFixed(2)} zł
 
   input(type="button" onclick=`window.location='/faktury/${invoice._id}/edytuj'` value="Edytuj")
+
+  button(id="deleteBtn") Usuń
+
+  div(id="deletePopup")
+    form(action=`/faktury/${invoice._id}/usun` method='POST')
+      input(type="button" value="Nie" onclick="console.log('hello')")
+      input(type="submit" value="Tak")
