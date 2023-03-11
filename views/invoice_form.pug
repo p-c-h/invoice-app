@@ -54,7 +54,7 @@ block main
 
       div(id="buyerWrapper")
         label(for="buyerInput") Nabywca: 
-        input(type="text" id="buyerInput")
+        input(type="text" id="buyerInput" required=(invoice===undefined))
         div(id="dropdown")
           div(id="dropdownItems")
       button(type="button" id="showPopupBtn") Dodaj nowego kontrahenta
@@ -65,7 +65,7 @@ block main
           li NIP: #{invoice.buyer.nip}
           li #{invoice.buyer.adress}
           li #{invoice.buyer.areaCode} #{invoice.buyer.city} 
-      input(type='hidden' name='buyerId' id='buyerId' value=(invoice===undefined ? '' : invoice.buyer._id))
+      input(type='hidden' name='buyerId' id='buyerId')
 
       p
         label(for='dateCreated') Data wystawienia: 
