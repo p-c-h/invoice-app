@@ -314,7 +314,7 @@ exports.invoice_detail = function (req, res, next) {
       if (err) {
         return next(err);
       }
-      res.render("invoice_detail", {
+      return res.render("invoice_detail", {
         user: req.user,
         invoice: result,
         month: result.transactionDate.getMonth() + 1,
@@ -456,6 +456,6 @@ exports.invoice_delete_post = (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.redirect("");
+    res.redirect(`/lista-faktur/${req.params.year}/${req.params.month}`);
   });
 };
