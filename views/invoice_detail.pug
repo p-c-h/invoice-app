@@ -21,6 +21,11 @@ block main
 
     #deletePopup {
       display: none;
+      position: fixed;
+      top: 5px;
+      z-index: 2;
+      padding: 20px;
+      border: 1px solid black;
     }
 
   - const formatDate = d => [d.getDate().toString().padStart(2, '0'), (d.getMonth() + 1).toString().padStart(2, '0'), d.getFullYear()].join('-')
@@ -77,9 +82,11 @@ block main
 
   input(type="button" onclick=`window.location='/faktury/${invoice._id}/edytuj'` value="Edytuj")
 
-  button(id="deleteBtn") Usuń
-
+  button(id="deleteBtn" onclick="showDeletePopup()") Usuń
   div(id="deletePopup")
-    form(action=`/faktury/${invoice._id}/usun` method='POST')
-      input(type="button" value="Nie" onclick="console.log('hello')")
+    p Czy na pewno chcesz usunąć?
+    form(action=`/faktury/${year}/${month}/${invoice._id}/usun` method='POST')
+      input(type="button" value="Nie" onclick="this.closest('#deletePopup').setAttribute('style', 'display: none')")
       input(type="submit" value="Tak")
+  script. 
+    function showDeletePopup() {document.getElementById("deletePopup").setAttribute('style', 'display: block')}
