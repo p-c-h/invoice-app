@@ -61,7 +61,10 @@ router.post(
   invoice_controller.invoice_update_post
 );
 
-router.post("/faktury/:invoiceId/usun", invoice_controller.invoice_delete_post);
+router.post(
+  "/faktury/:year/:month/:invoiceId/usun",
+  invoice_controller.invoice_delete_post
+);
 
 router.post("/nowy-kontrahent", buyer_controller.buyer_create_post);
 
