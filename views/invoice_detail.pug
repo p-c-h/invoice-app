@@ -19,13 +19,19 @@ block main
       text-align: center;
     }
 
+    #deleteBtnWrapper {
+      position: relative;
+    }
+
     #deletePopup {
       display: none;
-      position: fixed;
-      top: 5px;
-      z-index: 2;
+      position: absolute;
+      top: -40px;
+      left: 40px;
       padding: 20px;
       border: 1px solid black;
+      background-color: white;
+      z-index: 1;
     }
 
   - const formatDate = d => [d.getDate().toString().padStart(2, '0'), (d.getMonth() + 1).toString().padStart(2, '0'), d.getFullYear()].join('-')
@@ -82,11 +88,12 @@ block main
 
   input(type="button" onclick=`window.location='/faktury/${invoice._id}/edytuj'` value="Edytuj")
 
-  button(id="deleteBtn" onclick="showDeletePopup()") Usuń
-  div(id="deletePopup")
-    p Czy na pewno chcesz usunąć?
-    form(action=`/faktury/${year}/${month}/${invoice._id}/usun` method='POST')
-      input(type="button" value="Nie" onclick="this.closest('#deletePopup').setAttribute('style', 'display: none')")
-      input(type="submit" value="Tak")
+  div(id="deleteBtnWrapper")
+    button(id="deleteBtn" onclick="showDeletePopup()") Usuń
+    div(id="deletePopup")
+      p Czy na pewno chcesz usunąć?
+      form(action=`/faktury/${year}/${month}/${invoice._id}/usun` method='POST')
+        input(type="button" value="Nie" onclick="this.closest('#deletePopup').setAttribute('style', 'display: none')")
+        input(type="submit" value="Tak")
   script. 
     function showDeletePopup() {document.getElementById("deletePopup").setAttribute('style', 'display: block')}
