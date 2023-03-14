@@ -4,7 +4,12 @@ const passport = require("passport");
 const flash = require("connect-flash");
 
 exports.user_create_get = (req, res, next) => {
-  res.render("sign_up", { message: req.flash("info") });
+  if (req.user) {
+    const year = req.user.accountingDate.getFullYear();
+    const month = req.user.accountingDate.getMonth() + 1;
+    return res.redirect(`/lista-faktur/${year}/${month}`);
+  }
+  return res.render("sign_up", { message: req.flash("info") });
 };
 
 exports.user_create_post = [
