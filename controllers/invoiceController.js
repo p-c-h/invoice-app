@@ -2,7 +2,7 @@ const { body, validationResult } = require("express-validator");
 const async = require("async");
 const Buyer = require("../models/buyer");
 const Invoice = require("../models/invoice");
-const invoice = require("../models/invoice");
+const PDFDocument = require("pdfkit");
 
 function adjacent(date) {
   const months = [
@@ -321,6 +321,14 @@ exports.invoice_detail = function (req, res, next) {
         year: result.transactionDate.getFullYear(),
       });
     });
+};
+
+exports.invoice_pdf = function (req, res, next) {
+  const doc = new PDFDocument();
+  res.setHeader("Content-Disposition", 'attachment; filename="my-file.pdf"');
+  doc.fontSize(25).text("Some text with an embedded font!");
+  doc.pipe(res);
+  doc.end();
 };
 
 exports.invoice_update_get = function (req, res, next) {
