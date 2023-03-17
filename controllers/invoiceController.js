@@ -324,9 +324,25 @@ exports.invoice_detail = function (req, res, next) {
 };
 
 exports.invoice_pdf = function (req, res, next) {
+  const d = new Date();
+  const today = [
+    d.getDate().toString().padStart(2, "0"),
+    (d.getMonth() + 1).toString().padStart(2, "0"),
+    d.getFullYear(),
+  ].join("-");
+
+  // Note that the default page size in PDFKit is letter size (8.5 x 11 inches), which corresponds to 612 x 792 points. However, you can also set a custom page size using the doc.page.size property, which accepts an array of two values representing the width and height of the page in points. For example:
+
   const doc = new PDFDocument();
+
   res.setHeader("Content-Disposition", 'attachment; filename="my-file.pdf"');
-  doc.fontSize(25).text("Some text with an embedded font!");
+
+  doc.y = 30;
+  doc.fontSize(8).text(`Wystawiono dnia ${today}, Kielce`);
+  doc.moveDown();
+
+  doc.text("This is my text", 300);
+
   doc.pipe(res);
   doc.end();
 };
