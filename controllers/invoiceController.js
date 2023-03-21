@@ -367,112 +367,73 @@ exports.invoice_pdf = function (req, res, next) {
         .text(`Wystawiono dnia ${formatDate(dateCreated)}, Kielce`);
       doc.moveDown();
 
-      let startPosition = (doc.x = 300);
+      let xPos = (doc.x = 300);
       doc
         .fontSize(12)
-        .text(`Faktura VAT nr ${invoiceNumber + "/" + month + "/" + year}`);
-
-      let linePosition = doc.y;
+        .text(`Faktura VAT nr ${invoiceNumber + "/" + month + "/" + year}`)
+        .moveDown(0.5);
+      let yPos = doc.y;
+      let offset = 150;
 
       doc.text("Data sprzedaży:");
 
-      doc.text(formatDate(transactionDate), startPosition + 150, linePosition);
-      linePosition = doc.y;
+      doc.text(formatDate(transactionDate), xPos + offset, yPos);
+      yPos = doc.y;
 
-      doc.text("Sposób zapłaty:", startPosition);
+      doc.text("Sposób zapłaty:", xPos);
 
       doc.text(
         paymentMethod === "transfer" ? "Przelew" : "Gotówka",
-        startPosition + 150,
-        linePosition
+        xPos + offset,
+        yPos
       );
 
-      linePosition = doc.y;
-      doc.text("Termin płatności:", startPosition);
+      yPos = doc.y;
+      doc.text("Termin płatności:", xPos);
       doc
-        .text(`${paymentDue}`, startPosition + 150, linePosition)
+        .text(`${formatDate(paymentDue)}`, xPos + offset, yPos)
 
         .moveDown(0.5);
 
-      doc.x = 72;
+      xPos = doc.x = 72;
+      yPos = doc.y;
+      offset = 250;
+      doc.fontSize(16).text("Sprzedawca:");
+      doc.text("Nabywca:", xPos + offset, yPos).moveDown(0.5);
+      yPos = doc.y;
+      doc.fontSize(12).text("businessName", xPos);
+      doc.text("businessName2", xPos + offset, yPos);
+      yPos = doc.y;
+      doc.text("adress", xPos);
+      doc.text("adress2", xPos + offset, yPos);
+      yPos = doc.y;
+      doc.text("areaCode + city", xPos);
+      doc.text("areaCode2 + city2", xPos + offset, yPos);
+      yPos = doc.y;
+      doc.text("NIP", xPos);
+      doc.text("NIP2", xPos + offset, yPos).moveDown(0.5);
+      doc.fontSize(16).text("Pozycje faktury", xPos).moveDown(0.5);
 
       const table = {
-        title: "Title",
-        subtitle: "Subtitle",
+        // title: "Title",
+        // subtitle: "Subtitle",
         headers: [
-          { label: "Name", property: "name", width: 60, renderer: null },
-          {
-            label: "Description",
-            property: "description",
-            width: 150,
-            renderer: null,
-          },
-          { label: "Price 1", property: "price1", width: 100, renderer: null },
-          { label: "Price 2", property: "price2", width: 100, renderer: null },
-          { label: "Price 3", property: "price3", width: 80, renderer: null },
-          {
-            label: "Price 4",
-            property: "price4",
-            width: 43,
-            renderer: (
-              value,
-              indexColumn,
-              indexRow,
-              row,
-              rectRow,
-              rectCell
-            ) => {
-              return `U$ ${Number(value).toFixed(2)}`;
-            },
-          },
+          "Lp.",
+          "Nazwa towaru lub usługi",
+          "Ilość",
+          "Jedn.",
+          "Cena",
+          "Wartość",
+          "Stawka VAT",
         ],
-        // complex data
-        datas: [
-          {
-            name: "Name 1",
-            description:
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ",
-            price1: "$1",
-            price3: "$ 3",
-            price2: "$2",
-            price4: "4",
-          },
-          {
-            options: { fontSize: 10, separation: true },
-            name: "bold:Name 2",
-            description: "bold:Lorem ipsum dolor.",
-            price1: "bold:$1",
-            price3: {
-              label: "PRICE $3",
-              options: { fontSize: 12 },
-            },
-            price2: "$2",
-            price4: "4",
-          },
-          // {...},
-        ],
-        // simeple data
-        rows: [
-          [
-            "Apple",
-            "Nullam ut facilisis mi. Nunc dignissim ex ac vulputate facilisis.",
-            "$ 105,99",
-            "$ 105,99",
-            "$ 105,99",
-            "105.99",
-          ],
-          // [...],
-        ],
+        rows: [["1", "12%", "+1.12%", "4", "5", "6", "7"]],
       };
-      // the magic
+      // A4 595.28 x 841.89 (portrait) (about width sizes)
+      // width
       doc.table(table, {
-        prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-        prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
-          doc.font("Helvetica").fontSize(8);
-          indexColumn === 0 && doc.addBackground(rectRow, "blue", 0.15);
-        },
+        width: 300,
       });
-
+      // done!
       doc.pipe(res);
       doc.end();
     }
