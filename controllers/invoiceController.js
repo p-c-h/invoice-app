@@ -414,25 +414,141 @@ exports.invoice_pdf = function (req, res, next) {
       doc.text("NIP2", xPos + offset, yPos).moveDown(0.5);
       doc.fontSize(16).text("Pozycje faktury", xPos).moveDown(0.5);
 
-      const table = {
-        // title: "Title",
-        // subtitle: "Subtitle",
-        headers: [
-          "Lp.",
-          "Nazwa towaru lub usługi",
-          "Ilość",
-          "Jedn.",
-          "Cena",
-          "Wartość",
-          "Stawka VAT",
-        ],
-        rows: [["1", "12%", "+1.12%", "4", "5", "6", "7"]],
-      };
-      // A4 595.28 x 841.89 (portrait) (about width sizes)
-      // width
-      doc.table(table, {
-        width: 300,
+      // const arr = [];
+
+      // let lp = 1;
+      // result.invoiceItems.forEach((item) => {
+      //   const {
+      //     itemName,
+      //     itemQuantity,
+      //     unit,
+      //     singleItemPrice,
+      //     priceType,
+      //     taxRate,
+      //   } = item;
+      //   arr.push([
+      //     lp++,
+      //     itemName,
+      //     itemQuantity,
+      //     unit,
+      //     singleItemPrice.toFixed(2) + " zł " + priceType,
+      //     (itemQuantity * singleItemPrice).toFixed(2) + " zł " + priceType,
+      //     taxRate * 100 + "%",
+      //   ]);
+      // });
+
+      // const table = {
+      //   headers: [
+      //     { label: "Name", property: "name", width: 60, renderer: null },
+      //     {
+      //       label: "Description",
+      //       property: "description",
+      //       width: 150,
+      //       renderer: null,
+      //     },
+      //     { label: "Price 1", property: "price1", width: 100, renderer: null },
+      //     { label: "Price 2", property: "price2", width: 100, renderer: null },
+      //     { label: "Price 3", property: "price3", width: 80, renderer: null },
+      //     {
+      //       label: "Price 4",
+      //       property: "price4",
+      //       width: 43,
+      //       renderer: (
+      //         value,
+      //         indexColumn,
+      //         indexRow,
+      //         row,
+      //         rectRow,
+      //         rectCell
+      //       ) => {
+      //         return `U$ ${Number(value).toFixed(2)}`;
+      //       },
+      //     },
+      //   ],
+      //   datas: [
+      //     {
+      //       name: "Name 1",
+      //       description:
+      //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ",
+      //       price1: "$1",
+      //       price3: "$ 3",
+      //       price2: "$2",
+      //       price4: "4",
+      //     },
+      //     {
+      //       options: { fontSize: 10, separation: true },
+      //       name: "bold:Name 2",
+      //       description: "bold:Lorem ipsum dolor.",
+      //       price1: "bold:$1",
+      //       price3: {
+      //         label: "PRICE $3",
+      //         options: { fontSize: 12 },
+      //       },
+      //       price2: "$2",
+      //       price4: "4",
+      //     },
+      //     // {...},
+      //   ],
+      // };
+
+      let lp = 1;
+      const { invoiceItems } = result;
+      invoiceItems.forEach((item) => {
+        item.lp = lp++;
+        item.singleItemPrice =
+          item.singleItemPrice.toFixed(2) + " " + item.priceType;
+        item.value =
+          (item.singleItemPrice * item.itemQuantity).toFixed(2) +
+          " " +
+          item.priceType;
+        item.taxRate = item.taxRate * 100 + "%";
       });
+
+      const table = {
+        headers: [
+          { label: "Lp.", property: "lp", width: 20, renderer: null },
+          {
+            label: "Nazwa towaru lub usługi",
+            property: "itemName",
+            width: 150,
+            renderer: null,
+          },
+          {
+            label: "Ilość",
+            property: "itemQuantity",
+            width: 100,
+            renderer: null,
+          },
+          { label: "Jedn.", property: "unit", width: 100, renderer: null },
+          {
+            label: "Cena",
+            property: "singleItemPrice",
+            width: 100,
+            renderer: null,
+          },
+          { label: "Wartość", property: "value", width: 100, renderer: null },
+          {
+            label: "Stawka VAT",
+            property: "taxRate",
+            width: 100,
+            renderer: null,
+          },
+        ],
+        datas: invoiceItems,
+      };
+
+      doc.table(table, {
+        prepareHeader: () => doc.font("Roboto").fontSize(8),
+        prepareRow: () => doc.font("Roboto").fontSize(8),
+      });
+
+      // // A4 595.28 x 841.89 (portrait) (about width sizes)
+      // // width
+      // doc.table(table, {
+      //   columnsSize: [20, 150, 50, 50, 50, 50, 50],
+      //   prepareHeader: () => doc.font("Roboto").fontSize(8),
+      //   prepareRow: () => doc.font("Roboto").fontSize(8),
+      // });
       // done!
       doc.pipe(res);
       doc.end();
