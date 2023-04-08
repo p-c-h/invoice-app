@@ -64,8 +64,8 @@ block main
         th GTU 
         th Ilość
         th Jednostka 
-        th Cena jedn.
-        th Wartość
+        th Cena jedn. #{invoice.priceType}
+        th Wartość #{invoice.priceType}
         th VAT
       each item in invoice.invoiceItems
         tr
@@ -73,8 +73,8 @@ block main
           td #{item.gtu}
           td #{item.itemQuantity}
           td #{item.unit}
-          td #{item.singleItemPrice.toFixed(2) + " zł " + item.priceType}
-          td #{(item.itemQuantity * item.singleItemPrice).toFixed(2) + " zł " + item.priceType}
+          td #{item.singleItemPrice.toFixed(2)}
+          td #{(item.itemQuantity * item.singleItemPrice).toFixed(2)}
           td #{item.taxRate * 100}%
 
   h3 Podsumowanie faktury: 
