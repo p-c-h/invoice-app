@@ -83,6 +83,12 @@ const InvoiceSchema = new Schema({
     enum: ["transfer", "cash"],
     default: "transfer",
   },
+  priceType: {
+    type: String,
+    enum: ["netto", "brutto"],
+    required: true,
+  },
+
   invoiceItems: {
     type: [
       {
@@ -111,12 +117,12 @@ const InvoiceSchema = new Schema({
           required: true,
         },
 
-        priceType: {
-          type: String,
-          enum: ["netto", "brutto"],
-          default: "netto",
-          required: true,
-        },
+        // priceType: {
+        //   type: String,
+        //   enum: ["netto", "brutto"],
+        //   default: "netto",
+        //   required: true,
+        // },
 
         taxRate: {
           type: Number,
