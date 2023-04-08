@@ -176,6 +176,22 @@ function splitter(string) {
 
 // HELPER FUNCTIONS ^
 
+// PRICE TYPE v
+
+let priceType = document.getElementById("priceType").value;
+
+function changePriceTypeController(elem) {
+  priceType = elem.value;
+  Object.values(fieldsets).forEach((fset) => {
+    const fsetTotals = calculateFsetTotals(fset);
+    fset.totals = fsetTotals;
+  });
+  displayInvoiceTotals();
+  console.log(fieldsets);
+}
+
+// PRICE TYPE ^
+
 // FIELDSET v
 function selectElement(id, valueToSelect) {
   let element = document.getElementById(id);
@@ -188,62 +204,172 @@ let fieldsets = {};
 
 let fsetId = 0;
 
+// backup ⬇️
+// function addFset(received) {
+//   fsetId += 1;
+
+//   const fset = document.createElement("fieldset");
+
+//   fset.id = fsetId;
+//   fset.innerHTML = `
+//   <label for="itemName${fsetId}">Nazwa towaru lub usługi:</label>
+//   <input type="text" id="itemName${fsetId}" name="itemName${fsetId}" onfocusout="storeValue(this)" value="${
+//     received === undefined ? "" : received.itemName
+//   }" required>
+
+//   <label for="gtu${fsetId}">GTU:</label>
+//   <input type="text" id="gtu${fsetId}" name="gtu${fsetId}" onfocusout="storeValue(this)" value="${
+//     received === undefined ? "" : received.gtu
+//   }" required>
+
+//   <label for="itemQuantity${fsetId}">Ilość:</label>
+//   <input type="number" id="itemQuantity${fsetId}" name="itemQuantity${fsetId}" min="1" step="1" onfocusout="focusOutController(this)" value="${
+//     received === undefined ? "" : received.itemQuantity
+//   }" required>
+
+//   <label for="unit${fsetId}">Jednostka</label>
+//   <input type="text" id="unit${fsetId}" name="unit${fsetId}" onfocusout="storeValue(this)" value="${
+//     received === undefined ? "" : received.unit
+//   }" required>
+
+//   <label for="singleItemPrice${fsetId}">Cena jedn.:</label>
+//   <select id="priceType${fsetId}" name="priceType${fsetId}" onchange="focusOutController(this)" value="${
+//     received === undefined ? "" : received.priceType
+//   }">
+//     <option value="netto">netto</option>
+//     <option value="brutto">brutto</option>
+//   </select>
+//   <input type="number" id="singleItemPrice${fsetId}" name="singleItemPrice${fsetId}" min="0" step="0.01" onfocusout="focusOutController(this)" value="${
+//     received === undefined ? "" : received.singleItemPrice
+//   }" required>
+
+//   Stawka VAT:
+//   <select id="taxRate${fsetId}" name="taxRate${fsetId}" onchange="focusOutController(this)" value="${
+//     received === undefined ? "" : received.taxRate
+//   }">
+//     <option value=0.23>23%</option>
+//     <option value=0.08>8%</option>
+//     <option value=0.05>5%</option>
+//     <option value=0>0%</option>
+//     <option value=0>zw.</option>
+//   </select>
+
+//   <div class="removeButton tooltip">
+//     <span>x</span>
+//     <span class="tooltiptext">Faktura musi posiadać przynajmniej jedną pozycję</span>
+//   </div>
+//   `;
+
+//   addFsetButton.before(fset);
+
+//   const removeButton = fset.querySelector(".removeButton");
+//   const tooltiptext = fset.querySelector(".tooltiptext");
+
+//   removeButton.addEventListener("mouseover", () => {
+//     if (checkIfLast(fieldsets)) {
+//       tooltiptext.setAttribute("style", "visibility:visible");
+//     } else {
+//       return;
+//     }
+//   });
+
+//   removeButton.addEventListener("click", () => {
+//     if (checkIfLast(fieldsets)) {
+//       return;
+//     } else {
+//       removeFset(fset);
+//     }
+//   });
+
+//   removeButton.addEventListener("mouseout", () => {
+//     tooltiptext.setAttribute("style", "visibility:hidden");
+//   });
+
+//   if (arguments.length) {
+//     selectElement(`priceType${fsetId}`, received.priceType);
+//     selectElement(`taxRate${fsetId}`, received.taxRate);
+//     // const fsetTotals = calculateFsetTotals(received);
+//     // fieldsets[fsetId] = { ...received, totals: { fsetTotals } };
+//     fieldsets[fsetId] = received;
+//     displayInvoiceTotals("any");
+//   } else {
+//     fieldsets[fsetId] = {
+//       itemQuantity: null,
+//       singleItemPrice: null,
+//       priceType: "netto",
+//       taxRate: 0.23,
+//       complete: false,
+//     };
+//   }
+// }
+
+const tbody = document.querySelector("tbody");
+
 function addFset(received) {
   fsetId += 1;
 
-  const fset = document.createElement("fieldset");
+  const fset = document.createElement("tr");
 
   fset.id = fsetId;
-  fset.innerHTML = `
-  <label for="itemName${fsetId}">Nazwa towaru lub usługi:</label>
-  <input type="text" id="itemName${fsetId}" name="itemName${fsetId}" onfocusout="storeValue(this)" value="${
+  fset.innerHTML = `<td>
+    <label for="itemName${fsetId}">Nazwa towaru lub usługi:</label>
+    <input type="text" id="itemName${fsetId}" name="itemName${fsetId}" onfocusout="storeValue(this)" value="${
     received === undefined ? "" : received.itemName
   }" required>
+  </td>
 
-  <label for="gtu${fsetId}">GTU:</label>
-  <input type="text" id="gtu${fsetId}" name="gtu${fsetId}" onfocusout="storeValue(this)" value="${
+  <td>
+    <label for="gtu${fsetId}">GTU:</label>
+    <input type="text" id="gtu${fsetId}" name="gtu${fsetId}" onfocusout="storeValue(this)" value="${
     received === undefined ? "" : received.gtu
   }" required>
+  </td>
 
-  <label for="itemQuantity${fsetId}">Ilość:</label>
-  <input type="number" id="itemQuantity${fsetId}" name="itemQuantity${fsetId}" min="1" step="1" onfocusout="focusOutController(this)" value="${
+  <td>
+    <label for="itemQuantity${fsetId}">Ilość:</label>
+    <input type="number" id="itemQuantity${fsetId}" name="itemQuantity${fsetId}" min="1" step="1" onfocusout="focusOutController(this)" value="${
     received === undefined ? "" : received.itemQuantity
   }" required>
+  </td>
 
-  <label for="unit${fsetId}">Jednostka</label>
-  <input type="text" id="unit${fsetId}" name="unit${fsetId}" onfocusout="storeValue(this)" value="${
+  <td>
+    <label for="unit${fsetId}">Jednostka</label>
+    <input type="text" id="unit${fsetId}" name="unit${fsetId}" onfocusout="storeValue(this)" value="${
     received === undefined ? "" : received.unit
   }" required>
+  </td>
 
-  <label for="singleItemPrice${fsetId}">Cena jedn.:</label>
-  <select id="priceType${fsetId}" name="priceType${fsetId}" onchange="focusOutController(this)" value="${
-    received === undefined ? "" : received.priceType
-  }"> 
-    <option value="netto">netto</option>
-    <option value="brutto">brutto</option>
-  </select>
-  <input type="number" id="singleItemPrice${fsetId}" name="singleItemPrice${fsetId}" min="0" step="0.01" onfocusout="focusOutController(this)" value="${
+  <td>
+    <label for="singleItemPrice${fsetId}">Cena jedn.:</label>
+    <input type="number" id="singleItemPrice${fsetId}" name="singleItemPrice${fsetId}" min="0" step="0.01" onfocusout="focusOutController(this)" value="${
     received === undefined ? "" : received.singleItemPrice
   }" required>
+  </td>
 
-  Stawka VAT:
-  <select id="taxRate${fsetId}" name="taxRate${fsetId}" onchange="focusOutController(this)" value="${
+  <td>
+    Stawka VAT:
+    <select id="taxRate${fsetId}" name="taxRate${fsetId}" onchange="focusOutController(this)" value="${
     received === undefined ? "" : received.taxRate
   }">
-    <option value=0.23>23%</option>
-    <option value=0.08>8%</option>
-    <option value=0.05>5%</option>
-    <option value=0>0%</option>
-    <option value=0>zw.</option>
-  </select>
+      <option value=0.23>23%</option>
+      <option value=0.08>8%</option>
+      <option value=0.05>5%</option>
+      <option value=0>0%</option>
+      <option value=0>zw.</option>
+    </select>
+  </td>
 
-  <div class="removeButton tooltip">
-    <span>x</span>
-    <span class="tooltiptext">Faktura musi posiadać przynajmniej jedną pozycję</span>
-  </div>
+  <td>
+    <div class="removeButton tooltip">
+      <span>x</span>
+      <span class="tooltiptext">Faktura musi posiadać przynajmniej jedną pozycję</span>
+    </div>
+  </td>
   `;
 
-  addFsetButton.before(fset);
+  // addFsetButton.before(fset);
+
+  tbody.appendChild(fset);
 
   const removeButton = fset.querySelector(".removeButton");
   const tooltiptext = fset.querySelector(".tooltiptext");
@@ -269,17 +395,19 @@ function addFset(received) {
   });
 
   if (arguments.length) {
-    selectElement(`priceType${fsetId}`, received.priceType);
+    // selectElement(`priceType${fsetId}`, received.priceType);
     selectElement(`taxRate${fsetId}`, received.taxRate);
     // const fsetTotals = calculateFsetTotals(received);
     // fieldsets[fsetId] = { ...received, totals: { fsetTotals } };
     fieldsets[fsetId] = received;
+    const fsetTotals = calculateFsetTotals(fieldsets[fsetId]);
+    fieldsets[fsetId].totals = fsetTotals;
     displayInvoiceTotals("any");
   } else {
     fieldsets[fsetId] = {
       itemQuantity: null,
       singleItemPrice: null,
-      priceType: "netto",
+      // priceType: "netto",
       taxRate: 0.23,
       complete: false,
     };
@@ -326,7 +454,7 @@ function storeValue(elem) {
 }
 
 function calculateFsetTotals(fsetData) {
-  const { itemQuantity, singleItemPrice, priceType, taxRate } = fsetData;
+  const { itemQuantity, singleItemPrice, taxRate } = fsetData;
   const singleItemNetPrice =
     priceType === "netto"
       ? singleItemPrice
@@ -400,6 +528,7 @@ invoiceForm.addEventListener("submit", (e) => {
   fsetIds.value = Object.keys(fieldsets);
   netTotal.value = netTotalElem.textContent;
   taxTotal.value = taxTotalElem.textContent;
+  grossTotal.value = grossTotalElem.textContent;
 });
 
 // VALIDATION STAGE ^
