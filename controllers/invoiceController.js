@@ -175,6 +175,11 @@ const invoiceValidators = [
     .notEmpty()
     .escape()
     .withMessage('Pole: "Sposób zapłaty" musi być uzupełnione.'),
+  body("priceType")
+    .trim()
+    .notEmpty()
+    .escape()
+    .withMessage('Pole: "netto/brutto" musi być uzupełnione.'),
 ];
 
 exports.invoice_create_post = [
@@ -184,15 +189,7 @@ exports.invoice_create_post = [
   (req, res, next) => {
     const fieldsetsArr = [];
     validateDynamicInputs(
-      [
-        "itemName",
-        "gtu",
-        "itemQuantity",
-        "unit",
-        "singleItemPrice",
-        "priceType",
-        "taxRate",
-      ],
+      ["itemName", "gtu", "itemQuantity", "unit", "singleItemPrice", "taxRate"],
       req.body,
       fieldsetsArr
     );
@@ -209,6 +206,7 @@ exports.invoice_create_post = [
       paymentDue,
       issuePlace,
       paymentMethod,
+      priceType,
       netTotal,
       taxTotal,
       grossTotal,
@@ -247,6 +245,7 @@ exports.invoice_create_post = [
         },
         issuePlace,
         paymentMethod,
+        priceType,
         invoiceItems: fieldsetsArr,
         totals: {
           netTotal,
@@ -414,85 +413,8 @@ exports.invoice_pdf = function (req, res, next) {
       doc.text("NIP2", xPos + offset, yPos).moveDown(0.5);
       doc.fontSize(16).text("Pozycje faktury", xPos).moveDown(0.5);
 
-      // const arr = [];
-
-      // let lp = 1;
-      // result.invoiceItems.forEach((item) => {
-      //   const {
-      //     itemName,
-      //     itemQuantity,
-      //     unit,
-      //     singleItemPrice,
-      //     priceType,
-      //     taxRate,
-      //   } = item;
-      //   arr.push([
-      //     lp++,
-      //     itemName,
-      //     itemQuantity,
-      //     unit,
-      //     singleItemPrice.toFixed(2) + " zł " + priceType,
-      //     (itemQuantity * singleItemPrice).toFixed(2) + " zł " + priceType,
-      //     taxRate * 100 + "%",
-      //   ]);
-      // });
-
-      // const table = {
-      //   headers: [
-      //     { label: "Name", property: "name", width: 60, renderer: null },
-      //     {
-      //       label: "Description",
-      //       property: "description",
-      //       width: 150,
-      //       renderer: null,
-      //     },
-      //     { label: "Price 1", property: "price1", width: 100, renderer: null },
-      //     { label: "Price 2", property: "price2", width: 100, renderer: null },
-      //     { label: "Price 3", property: "price3", width: 80, renderer: null },
-      //     {
-      //       label: "Price 4",
-      //       property: "price4",
-      //       width: 43,
-      //       renderer: (
-      //         value,
-      //         indexColumn,
-      //         indexRow,
-      //         row,
-      //         rectRow,
-      //         rectCell
-      //       ) => {
-      //         return `U$ ${Number(value).toFixed(2)}`;
-      //       },
-      //     },
-      //   ],
-      //   datas: [
-      //     {
-      //       name: "Name 1",
-      //       description:
-      //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ",
-      //       price1: "$1",
-      //       price3: "$ 3",
-      //       price2: "$2",
-      //       price4: "4",
-      //     },
-      //     {
-      //       options: { fontSize: 10, separation: true },
-      //       name: "bold:Name 2",
-      //       description: "bold:Lorem ipsum dolor.",
-      //       price1: "bold:$1",
-      //       price3: {
-      //         label: "PRICE $3",
-      //         options: { fontSize: 12 },
-      //       },
-      //       price2: "$2",
-      //       price4: "4",
-      //     },
-      //     // {...},
-      //   ],
-      // };
-
       let lp = 1;
-      const { invoiceItems } = result;
+      const { invoiceItems, priceType } = result;
       invoiceItems.forEach((item) => {
         item.lp = lp++;
         item.singleItemPrice =
@@ -504,7 +426,7 @@ exports.invoice_pdf = function (req, res, next) {
         item.taxRate = item.taxRate * 100 + "%";
       });
 
-      const table = {
+      let table = {
         headers: [
           { label: "Lp.", property: "lp", width: 20, renderer: null },
           {
@@ -540,6 +462,101 @@ exports.invoice_pdf = function (req, res, next) {
       doc.table(table, {
         prepareHeader: () => doc.font("Roboto").fontSize(8),
         prepareRow: () => doc.font("Roboto").fontSize(8),
+      });
+
+      doc.fontSize(16).text("Podsumowanie", xPos).moveDown(0.5);
+
+      const obj = {};
+      const arr = [];
+
+      function round(num) {
+        return (Math.round((num + Number.EPSILON) * 100) / 100).toFixed(2);
+      }
+
+      invoiceItems.forEach((item) => {
+        if (obj.hasOwnProperty(item.taxRate)) {
+          obj[item.taxRate] += item.singleItemPrice * item.itemQuantity;
+        } else {
+          obj[item.taxRate] =
+            Number(item.singleItemPrice) * Number(item.itemQuantity);
+        }
+      });
+
+      for (n = 0; n < Object.keys(obj).length; n++) {
+        const taxRate = Object.keys(obj)[n];
+        const fsetNet =
+          priceType === "netto"
+            ? Object.values(obj)[n]
+            : round(Object.values(obj)[n] / (1 + Number(taxRate)));
+        const fsetTax = round(fsetNet * taxRate);
+        const fsetGross = (Number(fsetNet) + Number(fsetTax)).toFixed(2);
+
+        arr.push({
+          description: " ",
+          taxRate: `${taxRate * 100}%`,
+          fsetNet,
+          fsetTax,
+          fsetGross,
+        });
+      }
+
+      arr.push({
+        description: "bold:Razem:",
+        taxRate: " ",
+        fsetNet: `bold:${result.totals.netTotal.toFixed(2)}`,
+        fsetTax: `bold:${result.totals.taxTotal.toFixed(2)}`,
+        fsetGross: `bold:${result.totals.grossTotal.toFixed(2)}`,
+      });
+
+      table = {
+        headers: [
+          {
+            label: " ",
+            property: "description",
+            width: 80,
+            renderer: null,
+            headerAlign: "center",
+            align: "right",
+          },
+          {
+            label: "Stawka VAT",
+            property: "taxRate",
+            width: 100,
+            renderer: null,
+            headerAlign: "center",
+            align: "center",
+          },
+          {
+            label: "Wartość netto",
+            property: "fsetNet",
+            width: 100,
+            renderer: null,
+            headerAlign: "right",
+            align: "right",
+          },
+          {
+            label: "VAT",
+            property: "fsetTax",
+            width: 100,
+            renderer: null,
+            headerAlign: "right",
+            align: "right",
+          },
+          {
+            label: "Wartość brutto",
+            property: "fsetGross",
+            width: 100,
+            renderer: null,
+            headerAlign: "right",
+            align: "right",
+          },
+        ],
+        datas: arr,
+      };
+
+      doc.table(table, {
+        prepareHeader: () => doc.font("Roboto").fontSize(11),
+        prepareRow: () => doc.font("Roboto").fontSize(10),
       });
 
       // // A4 595.28 x 841.89 (portrait) (about width sizes)
@@ -594,15 +611,7 @@ exports.invoice_update_post = [
   (req, res, next) => {
     const fieldsetsArr = [];
     validateDynamicInputs(
-      [
-        "itemName",
-        "gtu",
-        "itemQuantity",
-        "unit",
-        "singleItemPrice",
-        "priceType",
-        "taxRate",
-      ],
+      ["itemName", "gtu", "itemQuantity", "unit", "singleItemPrice", "taxRate"],
       req.body,
       fieldsetsArr
     );
@@ -619,6 +628,7 @@ exports.invoice_update_post = [
       paymentDue,
       issuePlace,
       paymentMethod,
+      priceType,
       netTotal,
       taxTotal,
       grossTotal,
@@ -644,6 +654,7 @@ exports.invoice_update_post = [
       paymentDue,
       issuePlace,
       paymentMethod,
+      priceType,
       invoiceItems: fieldsetsArr,
       totals: {
         netTotal,
@@ -692,5 +703,67 @@ exports.invoice_delete_post = (req, res, next) => {
       return next(err);
     }
     res.redirect(`/lista-faktur/${req.params.year}/${req.params.month}`);
+  });
+};
+
+exports.test_create_get = function (req, res, next) {
+  Invoice.findOne({
+    _id: "642fbd395cf33cd2b32cb9de",
+    userId: req.user._id,
+  }).exec((err, result) => {
+    if (err) {
+      return next(err);
+    }
+    const {
+      dateCreated,
+      invoiceNumber,
+      transactionDate,
+      paymentMethod,
+      paymentDue,
+      invoiceItems,
+      priceType,
+    } = result;
+
+    const obj = {};
+    const test = [];
+    const arr = [];
+
+    function round(num) {
+      return (Math.round((num + Number.EPSILON) * 100) / 100).toFixed(2);
+    }
+
+    invoiceItems.forEach((item) => {
+      if (obj.hasOwnProperty(item.taxRate)) {
+        obj[item.taxRate] += item.singleItemPrice * item.itemQuantity;
+      } else {
+        test.push(item.singleItemPrice);
+        test.push(item.quantity);
+        obj[item.taxRate] = item.singleItemPrice * item.itemQuantity;
+      }
+    });
+
+    for (n = 0; n < Object.keys(obj).length; n++) {
+      const taxRate = Object.keys(obj)[n];
+
+      const fsetNet =
+        priceType === "netto"
+          ? Object.values(obj)[n]
+          : round(Object.values(obj)[n] / (1 + Number(taxRate)));
+      const fsetTax = round(fsetNet * taxRate);
+
+      const fsetGross = Number(fsetNet) + Number(fsetTax);
+
+      arr.push({
+        taxRate: `${taxRate * 100}`,
+        fsetNet,
+        fsetTax,
+        fsetGross,
+      });
+      res.render("test", {
+        obj,
+        arr,
+        test,
+      });
+    }
   });
 };
