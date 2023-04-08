@@ -11,6 +11,24 @@ block main
     const DateTime = luxon.DateTime;
     const buyerList = !{JSON.stringify(buyerList)}
 
+  style.
+    table {
+      border-collapse: collapse;
+      border: 2px solid rgb(200,200,200);
+      letter-spacing: 1px;
+      font-size: 0.8rem;
+      width: 100%;
+    }
+
+    td, th {
+      border: 1px solid rgb(190,190,190);
+      padding: 10px 20px;
+    }
+
+    td {
+      text-align: center;
+    }
+
   if invoice 
     script.
       const invoiceItems = !{JSON.stringify(invoice.invoiceItems)}
@@ -88,6 +106,22 @@ block main
       p
         label(for='issuePlace') Miejsce wystawienia faktury: 
         input(type='text' name='issuePlace' id='issuePlace' value=(invoice===undefined ? user.city : invoice.issuePlace) required)
+
+      table 
+        thead 
+          th Nazwa towaru lub usługi
+          th GTU
+          th Ilość
+          th Jednostka
+          th
+            | Cena jedn.
+            br
+            select(id="priceType" name="priceType" onchange="changePriceTypeController(this)")
+              option(value="netto" selected=(invoice===undefined || invoice.priceType==="netto")) netto 
+              option(value="brutto" selected=(invoice && invoice.priceType==="brutto")) brutto
+          th VAT 
+          th
+        tbody(id="tbody")
 
       button(type='button' id="addFsetButton" onclick='addFset()') Dodaj kolejne pole
 
