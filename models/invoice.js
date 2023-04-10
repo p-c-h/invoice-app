@@ -25,6 +25,12 @@ const Schema = mongoose.Schema;
 const InvoiceSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   userDetails: {
+    firstName: {
+      type: String,
+    },
+    surname: {
+      type: String,
+    },
     businessName: {
       type: String,
     },
@@ -138,6 +144,17 @@ const InvoiceSchema = new Schema({
     taxTotal: { type: Number },
     grossTotal: { type: Number },
   },
+});
+
+InvoiceSchema.virtual("name").get(function () {
+  let fullname = "";
+  if (this.firstName && this.surname) {
+    fullname = `${this.firstName} ${this.surname}`;
+  }
+  if (!this.firstName || !this.surname) {
+    fullname = "";
+  }
+  return fullname;
 });
 
 module.exports = mongoose.model("Invoice", InvoiceSchema);
