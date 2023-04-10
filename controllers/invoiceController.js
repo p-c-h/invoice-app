@@ -216,8 +216,16 @@ exports.invoice_create_post = [
       grossTotal,
     } = req.body;
 
-    const { businessName, nip, adress, areaCode, city, bankAccountNumber } =
-      req.user;
+    const {
+      firstName,
+      surname,
+      businessName,
+      nip,
+      adress,
+      areaCode,
+      city,
+      bankAccountNumber,
+    } = req.user;
 
     Buyer.findOne({
       userId: req.user._id,
@@ -229,6 +237,8 @@ exports.invoice_create_post = [
       const invoice = new Invoice({
         userId: req.user._id,
         userDetails: {
+          firstName,
+          surname,
           businessName,
           nip,
           adress,
@@ -336,6 +346,14 @@ exports.invoice_pdf = function (req, res, next) {
       d.getFullYear(),
     ].join("-");
 
+  function showAsPrice(arg) {
+    return Number(arg).toFixed(2).replace(".", ",");
+  }
+
+  function round(num) {
+    return (Math.round((num + Number.EPSILON) * 100) / 100).toFixed(2);
+  }
+
   Invoice.findOne({ _id: req.params.invoiceId, userId: req.user._id }).exec(
     (err, result) => {
       if (err) {
@@ -357,12 +375,22 @@ exports.invoice_pdf = function (req, res, next) {
       const month = result.transactionDate.getMonth() + 1;
       const year = result.transactionDate.getFullYear();
 
+      function formatAccNum(accNum) {
+        const firstTwo = accNum.slice(0, 2);
+        const rest = accNum.slice(2);
+        const fours = rest.match(/.{1,4}/g);
+        return [firstTwo, ...fours].join(" ");
+      }
+
       const invoiceItemsRows = [];
       let lp = 1;
+      const storObj = {};
+      const storArr = [];
 
       invoiceItems.forEach((item) => {
+        // POZYCJE FAKTURY table ⬇️
         invoiceItemsRows.push([
-          { text: `${lp++}`, alignment: "center", style: "tableText" },
+          { text: `${lp++}.`, alignment: "center", style: "tableText" },
           {
             text: `${item.itemName}`,
             style: "tableText",
@@ -375,18 +403,48 @@ exports.invoice_pdf = function (req, res, next) {
           },
           { text: `${item.unit}`, alignment: "right", style: "tableText" },
           {
-            text: `${item.singleItemPrice}`,
+            text: `${showAsPrice(item.singleItemPrice)}`,
             alignment: "right",
             style: "tableText",
           },
           {
-            text: `${item.itemQuantity * item.singleItemPrice}`,
+            text: `${showAsPrice(item.itemQuantity * item.singleItemPrice)}`,
             alignment: "right",
             style: "tableText",
           },
-          { text: `${item.taxRate}`, alignment: "right", style: "tableText" },
+          {
+            text: `${item.taxRate * 100}%`,
+            alignment: "right",
+            style: "tableText",
+          },
         ]);
+        // PODSUMOWANIE table ⬇️
+        if (storObj.hasOwnProperty(item.taxRate)) {
+          storObj[item.taxRate] += item.singleItemPrice * item.itemQuantity;
+        } else {
+          storObj[item.taxRate] =
+            Number(item.singleItemPrice) * Number(item.itemQuantity);
+        }
       });
+
+      for (const [key, value] of Object.entries(storObj)) {
+        const taxRate = Number(key);
+        const entryNet =
+          priceType === "netto" ? value : round(value) / (1 + taxRate);
+        const entryTax = round(entryNet * taxRate);
+        const entryGross = Number(entryNet) + Number(entryTax);
+        storArr.push([
+          "",
+          {
+            text: `${taxRate * 100}%`,
+            style: "tableText",
+            alignment: "center",
+          },
+          { text: `${showAsPrice(entryNet)}`, style: "tableText" },
+          { text: `${showAsPrice(entryTax)}`, style: "tableText" },
+          { text: `${showAsPrice(entryGross)}`, style: "tableText" },
+        ]);
+      }
 
       const docDefinition = {
         content: [
@@ -477,8 +535,14 @@ exports.invoice_pdf = function (req, res, next) {
                   },
                   { text: "Ilość", style: "tableHeader" },
                   { text: "Jedn.", style: "tableHeader" },
-                  { stack: ["Cena", "jedn. netto"], style: "tableHeader" },
-                  { stack: ["Wartość", "netto"], style: "tableHeader" },
+                  {
+                    stack: ["Cena", `jedn.  ${result.priceType}`],
+                    style: "tableHeader",
+                  },
+                  {
+                    stack: ["Wartość", `${result.priceType}`],
+                    style: "tableHeader",
+                  },
                   { stack: ["Stawka", "VAT"], style: "tableHeader" },
                 ],
                 ...invoiceItemsRows,
@@ -524,19 +588,25 @@ exports.invoice_pdf = function (req, res, next) {
                   { text: "VAT", style: "tableText", bold: true },
                   { text: "Wartość brutto", style: "tableText", bold: true },
                 ],
-                [
-                  "",
-                  { text: "23%", style: "tableText", alignment: "center" },
-                  { text: "150,00", style: "tableText" },
-                  { text: "34,50", style: "tableText" },
-                  { text: "184,50", style: "tableText" },
-                ],
+                ...storArr,
                 [
                   { text: "Razem:", style: "tableText", bold: true },
                   "",
-                  { text: "150,00", style: "tableText", bold: true },
-                  { text: "34,50", style: "tableText", bold: true },
-                  { text: "184,50", style: "tableText", bold: true },
+                  {
+                    text: `${showAsPrice(result.totals.netTotal)}`,
+                    style: "tableText",
+                    bold: true,
+                  },
+                  {
+                    text: `${showAsPrice(result.totals.taxTotal)}`,
+                    style: "tableText",
+                    bold: true,
+                  },
+                  {
+                    text: `${showAsPrice(result.totals.grossTotal)}`,
+                    style: "tableText",
+                    bold: true,
+                  },
                 ],
                 [
                   { text: "Zapłacono:", style: "tableText", bold: true },
@@ -558,7 +628,11 @@ exports.invoice_pdf = function (req, res, next) {
                 ],
                 [
                   { text: "Konto bankowe:", style: "tableText", bold: true },
-                  { colSpan: 4, text: "PEKAO 2345", style: "tableText" },
+                  {
+                    colSpan: 4,
+                    text: `${formatAccNum(req.user.bankAccountNumber)}`,
+                    style: "tableText",
+                  },
                   "",
                   "",
                   "",
@@ -603,7 +677,13 @@ exports.invoice_pdf = function (req, res, next) {
                     text: "Osoba upoważniona do wystawienia faktury VAT",
                     alignment: "center",
                   },
-                  { text: "Piotr Chróściel", alignment: "center", bold: true },
+                  {
+                    text: `${
+                      userDetails.firstName + " " + userDetails.surname
+                    }`,
+                    alignment: "center",
+                    bold: true,
+                  },
                 ],
               },
             ],
@@ -954,20 +1034,21 @@ exports.invoice_update_post = [
       grossTotal,
     } = req.body;
 
-    const { businessName, nip, adress, areaCode, city, bankAccountNumber } =
-      req.user;
+    // ⬇️ Don't want to update user details
+    // const { businessName, nip, adress, areaCode, city, bankAccountNumber } =
+    //   req.user;
 
     const invoice = new Invoice({
       _id: req.params.invoiceId,
       userId: req.user._id,
-      userDetails: {
-        businessName,
-        nip,
-        adress,
-        areaCode,
-        city,
-        bankAccountNumber,
-      },
+      // userDetails: {
+      //   businessName,
+      //   nip,
+      //   adress,
+      //   areaCode,
+      //   city,
+      //   bankAccountNumber,
+      // },
       invoiceNumber,
       dateCreated,
       transactionDate,
