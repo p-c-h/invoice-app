@@ -11,6 +11,14 @@ block main
     span(style={color: 'blue'}) #{user.username}
   form(action='' method='POST')
 
+    label
+      | Imię:
+      input(type='text' name='firstName' required value=user.firstName)
+
+    label
+      | Nazwisko:
+      input(type='text' name='surname' required value=user.surname)
+
     label(for='businessName') Nazwa firmy: 
     input(type='text' name='businessName' required value=user.businessName)
 
