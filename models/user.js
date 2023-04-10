@@ -11,6 +11,16 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  //
+  firstName: {
+    type: String,
+    required: true,
+  },
+  surname: {
+    type: String,
+    required: true,
+  },
+  //
   businessName: {
     type: String,
   },
