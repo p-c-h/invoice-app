@@ -130,6 +130,10 @@ block main
         option(value="transfer" selected=(invoice===undefined || invoice.paymentMethod==="transfer")) Przelew
         option(value="cash" selected=(invoice && invoice.paymentMethod==="cash")) Gotówka
 
+      p 
+        label
+          | Zapłacono PLN
+          input(name="paid" type="number" min="0" step="0.01" value=(invoice===undefined ? '0' : invoice.paid))
 
       input(type='hidden' name='fsetIds' id='fsetIds')
       input(type='hidden' name='netTotal' id='netTotal' value=(invoice===undefined ? '' : invoice.totals.netTotal))
