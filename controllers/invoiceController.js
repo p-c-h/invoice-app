@@ -2,8 +2,7 @@ const { body, validationResult } = require("express-validator");
 const async = require("async");
 const Buyer = require("../models/buyer");
 const Invoice = require("../models/invoice");
-// const PDFDocument = require("pdfkit");
-const PDFDocument = require("pdfkit-table");
+const { formatPrice } = require("../utils/utils");
 const path = require("path");
 
 var pdfMake = require("pdfmake/build/pdfmake.js");
@@ -184,6 +183,7 @@ const invoiceValidators = [
     .notEmpty()
     .escape()
     .withMessage('Pole: "netto/brutto" musi być uzupełnione.'),
+  body("paid").trim().escape(),
 ];
 
 exports.invoice_create_post = [
@@ -214,6 +214,7 @@ exports.invoice_create_post = [
       netTotal,
       taxTotal,
       grossTotal,
+      paid,
     } = req.body;
 
     const {
@@ -266,6 +267,7 @@ exports.invoice_create_post = [
           taxTotal,
           grossTotal,
         },
+        paid,
       });
       invoice.save((err, result) => {
         if (err) {
@@ -318,6 +320,7 @@ exports.invoice_list = function (req, res, next) {
         year,
         month,
         invoices,
+        formatPrice,
       });
     });
 };
@@ -334,6 +337,7 @@ exports.invoice_detail = function (req, res, next) {
         invoice: result,
         month: result.transactionDate.getMonth() + 1,
         year: result.transactionDate.getFullYear(),
+        formatPrice,
       });
     });
 };
@@ -345,10 +349,6 @@ exports.invoice_pdf = function (req, res, next) {
       (d.getMonth() + 1).toString().padStart(2, "0"),
       d.getFullYear(),
     ].join("-");
-
-  function showAsPrice(arg) {
-    return Number(arg).toFixed(2).replace(".", ",");
-  }
 
   function round(num) {
     return (Math.round((num + Number.EPSILON) * 100) / 100).toFixed(2);
@@ -403,12 +403,12 @@ exports.invoice_pdf = function (req, res, next) {
           },
           { text: `${item.unit}`, alignment: "right", style: "tableText" },
           {
-            text: `${showAsPrice(item.singleItemPrice)}`,
+            text: `${formatPrice(item.singleItemPrice)}`,
             alignment: "right",
             style: "tableText",
           },
           {
-            text: `${showAsPrice(item.itemQuantity * item.singleItemPrice)}`,
+            text: `${formatPrice(item.itemQuantity * item.singleItemPrice)}`,
             alignment: "right",
             style: "tableText",
           },
@@ -440,9 +440,9 @@ exports.invoice_pdf = function (req, res, next) {
             style: "tableText",
             alignment: "center",
           },
-          { text: `${showAsPrice(entryNet)}`, style: "tableText" },
-          { text: `${showAsPrice(entryTax)}`, style: "tableText" },
-          { text: `${showAsPrice(entryGross)}`, style: "tableText" },
+          { text: `${formatPrice(entryNet)}`, style: "tableText" },
+          { text: `${formatPrice(entryTax)}`, style: "tableText" },
+          { text: `${formatPrice(entryGross)}`, style: "tableText" },
         ]);
       }
 
@@ -593,17 +593,17 @@ exports.invoice_pdf = function (req, res, next) {
                   { text: "Razem:", style: "tableText", bold: true },
                   "",
                   {
-                    text: `${showAsPrice(result.totals.netTotal)}`,
+                    text: `${formatPrice(result.totals.netTotal)}`,
                     style: "tableText",
                     bold: true,
                   },
                   {
-                    text: `${showAsPrice(result.totals.taxTotal)}`,
+                    text: `${formatPrice(result.totals.taxTotal)}`,
                     style: "tableText",
                     bold: true,
                   },
                   {
-                    text: `${showAsPrice(result.totals.grossTotal)}`,
+                    text: `${formatPrice(result.totals.grossTotal)}`,
                     style: "tableText",
                     bold: true,
                   },
@@ -1032,6 +1032,7 @@ exports.invoice_update_post = [
       netTotal,
       taxTotal,
       grossTotal,
+      paid,
     } = req.body;
 
     // ⬇️ Don't want to update user details
@@ -1062,6 +1063,7 @@ exports.invoice_update_post = [
         taxTotal,
         grossTotal,
       },
+      paid,
     });
 
     if (req.body.buyerId) {
