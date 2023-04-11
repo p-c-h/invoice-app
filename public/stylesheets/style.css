@@ -46,9 +46,8 @@ button {
   padding: 5px 0;
   border-radius: 6px;
  
-  /* Position the tooltip text - see examples below! */
   position: absolute;
-  left: 105%;
+  right: 105%;
   z-index: 1;
 }
 
@@ -87,6 +86,8 @@ button {
   background-color: white;
   display: none;
   max-height: 100px;
+  width: 200px;
+  border: 1px solid black;
   overflow-y: scroll;  
   /* -webkit-appearance: none; */
 }
