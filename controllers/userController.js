@@ -73,6 +73,13 @@ exports.user_detail_get = (req, res, next) => {
 };
 
 exports.user_detail_update_post = [
+  body("firstName", "Pole imię nie może być puste.").trim().notEmpty().escape(),
+
+  body("surname", "Pole nazwisko nie może być puste.")
+    .trim()
+    .notEmpty()
+    .escape(),
+
   body("businessName", "Nazwa firmy nie może być pusta.")
     .trim()
     .notEmpty()
@@ -101,6 +108,8 @@ exports.user_detail_update_post = [
     td.setDate(5); // 1 hour time difference compared to UTC. I have to account for my locale because mongodb store date as UTC timestamp.
 
     const user = new User({
+      firstName: req.body.firstName,
+      surname: req.body.surname,
       businessName: req.body.businessName,
       nip: req.body.nip,
       adress: req.body.adress,
