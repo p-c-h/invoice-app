@@ -90,14 +90,14 @@ function populateDropdown(buyers) {
 buyerInput.addEventListener("input", () => {
   dropdown.style.display = "block";
   const query = buyerInput.value.toLowerCase();
-  const result = narrowDown(buyersList, query);
+  const result = narrowDown(buyerList, query);
   populateDropdown(result);
 });
 
 function narrowDown(arr, query) {
   let result = [];
   arr.forEach((elem) => {
-    if (elem.businessName.toLowerCase().includes(query)) {
+    if (elem.businessName.toLowerCase().slice(0, query.length) === query) {
       result.push(elem);
     }
   });
