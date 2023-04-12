@@ -44,6 +44,9 @@ exports.user_create_post = [
         return res.redirect("/rejestracja");
       }
 
+      const td = new Date();
+      td.setDate(5); // 1 hour time difference compared to UTC. I have to account for my locale because mongodb store date as UTC timestamp.
+
       const user = new User({
         username: req.body.username,
         password: req.body.password,
@@ -53,6 +56,7 @@ exports.user_create_post = [
         areaCode: null,
         city: null,
         bankAccountNumber: null,
+        accountingDate: td,
         profileComplete: false,
       });
 
@@ -104,8 +108,6 @@ exports.user_detail_update_post = [
 
   (req, res, next) => {
     const errors = validationResult(req);
-    const td = new Date();
-    td.setDate(5); // 1 hour time difference compared to UTC. I have to account for my locale because mongodb store date as UTC timestamp.
 
     const user = new User({
       firstName: req.body.firstName,
@@ -116,7 +118,6 @@ exports.user_detail_update_post = [
       areaCode: req.body.areaCode,
       city: req.body.city,
       bankAccountNumber: req.body.bankAccountNumber,
-      accountingDate: td,
       profileComplete: true,
       _id: req.user.id,
     });
