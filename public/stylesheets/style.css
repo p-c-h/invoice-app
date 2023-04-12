@@ -89,26 +89,26 @@ button {
   width: 200px;
   border: 1px solid black;
   overflow-y: scroll;  
-  /* -webkit-appearance: none; */
-}
-/* 
-#dropdown::-webkit-scrollbar {
-  width: 0.2em;
-  background-color: rgba(0, 0, 0, 0.1);
 }
 
-#dropdown::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.5);
-} */
+/* Button Styles */
+.flat-button {
+  display: inline-block;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #3498db;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
-/* Chrome, Safari, Edge, Opera */
-/* input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-} */
+.flat-button:hover {
+  background-color: #2980b9;
+}
 
-/* Firefox */
-/* input[type=number] {
-  -moz-appearance: textfield;
-} */
+.flat-button:active {
+  background-color: #1e6fa0;
+}
