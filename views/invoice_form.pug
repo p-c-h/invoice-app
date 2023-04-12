@@ -35,7 +35,7 @@ block main
 
   if user.profileComplete === false
     p Uzupełnij profil, aby móc wystawiać faktury.
-    a(href='/uzytkownik' style={display:'block', 'text-align':'center'}) Kliknij tu
+    input(type="button" class="flat-button" onclick="location.href='/uzytkownik';" value="Kliknij tu")
   else
     div(id="popup")
       | Nowy kontrahent:
