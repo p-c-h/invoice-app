@@ -1,25 +1,28 @@
 extends layout
 
 block content
-  form(action='/log-in' method='POST')
-    fieldset
-      legend Zaloguj się
-      p(style={color: 'red'}) #{message}
-      label(for='username') Nazwa użytkownika:
-      input(type='text' name='username' required='true')
-      label(for='password') Hasło:
-      input(type='password' name='password' required='true')
-      button(type='submit') Zaloguj się
-      p
-        a(href='#' onclick='loginToDemo()') Zaloguj się
-        |  na konto demonstracyjne.
-  br
-  a(href='/rejestracja') Utwórz konto
-  if errors
-    ul 
-      for error in errors 
-        li!= error.msg
-  // including HTML as text in a Pug/Jade file will parse into Pug:
-  | <script>function loginToDemo() {document.querySelector('[name="username"]').value = 'pepe'; document.querySelector('[name="password"]').value = 'frogger'; document.querySelector('form').submit()};</script>
+  div(class='center padding')
+    div(class='signInBox')
+      a(class='logo' href='/') Fakturownia
+      form(action='/log-in' method='POST')
+        if message
+          p(class='error') #{message}
+        label(for='username') Nazwa użytkownika:
+        input(type='text' class='signInInput' name='username' required='true')
+        label(for='password') Hasło:
+        input(type='password' class='signInInput' name='password' required='true')
+        button(type='submit' class='flat-button') Zaloguj się
+        p
+          a(href='#' onclick='loginToDemo()') Zaloguj się
+          br
+          |  na konto demonstracyjne.
+      br
+      a(href='/rejestracja') Utwórz konto
+      if errors
+        ul 
+          for error in errors 
+            li!= error.msg
+      // including HTML as text in a Pug/Jade file will parse into Pug:
+      | <script>function loginToDemo() {document.querySelector('[name="username"]').value = 'pepe'; document.querySelector('[name="password"]').value = 'frogger'; document.querySelector('form').submit()};</script>
 
 
