@@ -3,18 +3,83 @@
 }
 
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+  margin: 0;
+}
+
+.padding {
+  padding: 20px;
+}
+
+.paddingT {
+  padding: 0 20px 20px 20px;
 }
 
 a {
   color: #00B7FF;
 }
 
+.logo {
+  display: inline-block;
+  margin-bottom: 16px;
+  margin-top: 0;
+  font-family: 'Exo 2', Arial, sans-serif;
+  color: #3498db;
+  text-decoration: none;
+  font-size: 2em;
+}
+
+.logo:hover {
+  color: #2980b9;
+}
+
+.logo:active {
+  color: #1e6fa0;
+}
+
+#header {
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#header .logo {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.center {
+	display: flex;
+	justify-content: center;
+}
+
+.signInBox {
+	max-width: 350px;
+	padding: 50px;
+	border: 1px solid #DDD;
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
 label,
 input,
 button {
   display: block;
+  margin-bottom: 12px;
+}
+
+form input:last-of-type {
+  margin-bottom: 30px;
+}
+
+.signInInput {
+  outline: none;
+  border: none;
+  border-bottom: 2px solid #ccc;
+}
+
+.signInInput:focus {
+  border-bottom-color: #00B7FF;
 }
 
 .removeButton {
@@ -93,17 +158,18 @@ button {
 
 /* Button Styles */
 .flat-button {
-  display: inline-block;
-  padding: 8px 16px;
+  padding: 12px 20px;
   border: none;
   border-radius: 4px;
   background-color: #3498db;
   color: #fff;
+  font-size: 16px;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+
 
 .flat-button:hover {
   background-color: #2980b9;
@@ -111,4 +177,8 @@ button {
 
 .flat-button:active {
   background-color: #1e6fa0;
+}
+
+.error {
+  color: red;
 }
