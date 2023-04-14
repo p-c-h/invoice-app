@@ -1,22 +1,23 @@
-extends layout 
+extends layout
 
 block content
-  form(action='' method='POST')
-    fieldset 
-      legend Utwórz konto
-      if errors 
-        ul(style={color: 'red'}) 
-          for error in errors 
-            li!=error.msg
-      if message
-        p(style={color: 'red'}) #{message}
-      label(for='username') Wybierz nazwę użytkownika
-        span(aria-label='required') *
-      input(type='text' name='username'  required value=username)
-      label(for='password') Hasło
-        span(aria-label='required') * 
-        | (musi mieć conajmniej 6 znaków)
-      input(type='password' name='password' minlength='6' maxlength='18' required)
-      button(type='submit') Submit
-  br
-  a(href='/') Zaloguj się
+  div(class='center padding')
+    div(class='signInBox')
+      a(class='logo' href='/') Fakturownia
+      form(action='' method='POST')
+        if errors 
+          ul(class='error') 
+            for error in errors 
+              li!=error.msg
+        if message
+          p(class='error') #{message}
+
+        label(for='username') Wybierz nazwę użytkownika
+          span(aria-label='required') *
+        input(class='signInInput' type='text' name='username' required value=username)
+        label(for='password') Hasło
+          span(aria-label='required') * 
+          | (musi mieć conajmniej 6 znaków)
+        input(class='signInInput' type='password' name='password' minlength='6' maxlength='18' required)
+        button(type='submit' class="flat-button") Utwórz konto
+        a(href='/') Zaloguj się
