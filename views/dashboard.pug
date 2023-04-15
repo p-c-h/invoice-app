@@ -3,7 +3,21 @@ extends layout
 block content
   div(id='header')
     a(class='logo' href='/') Fakturownia
-  div(class='paddingT')
+    div(style={display: 'flex', gap: '10px'})
+      p
+        | Zalogowano jako:
+        a(href='/uzytkownik')
+          span(class='iconSpace')
+            i(class='fa-solid fa-user')
+          | #{user.username}
+      span |
+      p
+        a(href='/log-out')
+          span(class='iconSpace')
+            i(class='fa-solid fa-power-off')
+          | Wyloguj się
+
+  div(class='paddingLBR')
     div(style={display: 'flex', gap: '20px', 'flex-wrap': 'wrap'})
       div(style={padding: '15px', 'border-right': 'solid 1px black'})
         ul
