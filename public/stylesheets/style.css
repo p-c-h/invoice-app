@@ -11,7 +11,7 @@ body {
   padding: 20px;
 }
 
-.paddingT {
+.paddingLBR {
   padding: 0 20px 20px 20px;
 }
 
@@ -38,19 +38,37 @@ a {
 }
 
 #header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #ccc;
+
 }
 
 #header .logo {
+  margin: 0;
+}
+
+#header p {
+  margin: 0;
+}
+
+.iconSpace {
+  display: inline-block;
   text-align: center;
-  margin-bottom: 0;
+  width: 25px;
 }
 
 .center {
 	display: flex;
 	justify-content: center;
+}
+
+.centerVert {
+  display: flex;
+  align-items: center;
 }
 
 .signInBox {
