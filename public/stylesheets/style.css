@@ -3,8 +3,28 @@
 }
 
 body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;  
   font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: #333333;
   margin: 0;
+}
+
+a {
+  color: #00B7FF;
+}
+
+table {
+	border-collapse: collapse;
+	letter-spacing: 1px;
+	font-size: 0.8rem;
+}
+
+td {
+  text-align: center;
+  min-width: 35px;
+  height: 35px;
 }
 
 .padding {
@@ -13,10 +33,6 @@ body {
 
 .paddingLBR {
   padding: 0 20px 20px 20px;
-}
-
-a {
-  color: #00B7FF;
 }
 
 .logo {
@@ -41,24 +57,46 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   padding: 20px;
-  margin-bottom: 20px;
   border-bottom: 1px solid #ccc;
-
 }
 
-#header .logo {
+#header p, .logo {
   margin: 0;
 }
 
-#header p {
-  margin: 0;
+#accountControls {
+  display: flex;
+  gap: 5px;
+  font-size: small;
 }
 
 .iconSpace {
   display: inline-block;
-  text-align: center;
-  width: 25px;
+  width: 15px;
+}
+
+.bars {
+  display: none;
+  width: 15px;
+}
+
+#wrapper {
+  flex: 1;
+  display: flex;
+}
+
+#leftPanel {
+  flex-shrink: 0;
+  background-color: #F5F5F5;
+  padding: 10px;
+}
+
+#main {
+  width: 100%;
+  border: 1px solid red;
+  padding: 10px;
 }
 
 .center {
@@ -174,7 +212,7 @@ form input:last-of-type {
   overflow-y: scroll;  
 }
 
-/* Button Styles */
+/* button styles ⬇️ */
 .flat-button {
   padding: 12px 20px;
   border: none;
@@ -199,4 +237,62 @@ form input:last-of-type {
 
 .error {
   color: red;
+}
+
+/* month selector ⬇️ */
+
+#monthSelector {
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: #fff;
+  font-size: 0.9rem;
+  padding: 15px;
+  background-color: #3498db;
+}
+
+.monthBtn {
+  min-width: 30px;
+  min-height: 30px;
+  cursor: pointer;
+}
+
+#selectedMonth {
+  color:#3498db;
+  background-color: #fff;
+  border-radius: 3px;
+}
+
+/* invoice list ⬇️ */
+
+#invoiceList {
+	border: 2px solid rgb(200,200,200);
+  table-layout: auto;
+
+}
+
+#invoiceList td, th {
+  white-space: nowrap;
+	border: 1px solid rgb(190,190,190);
+  padding: 10px 20px;
+}
+
+#widest {
+  width: 100%;
+  white-space: normal !important;
+}
+
+@media (max-width: 600px) {
+
+  #wrapper {
+    display: block;
+  }
+
+  .bars {
+    display: inline-block;
+  }
+
+  #accountControls {
+    display: none;
+  }
 }
