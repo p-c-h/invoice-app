@@ -3,9 +3,9 @@ extends layout
 block content
   div(id='header')
     a(class='logo' href='/') Fakturownia
-    div(style={display: 'flex', gap: '10px'})
+    div(id='accountControls')
       p
-        | Zalogowano jako:
+        | Użytkownik: 
         a(href='/uzytkownik')
           span(class='iconSpace')
             i(class='fa-solid fa-user')
@@ -16,19 +16,21 @@ block content
           span(class='iconSpace')
             i(class='fa-solid fa-power-off')
           | Wyloguj się
+    div(class='bars')
+      i(class='fa-solid fa-bars')
 
-  div(class='paddingLBR')
-    div(style={display: 'flex', gap: '20px', 'flex-wrap': 'wrap'})
-      div(style={padding: '15px', 'border-right': 'solid 1px black'})
-        ul
-          li
-            a(href="/wystaw-fakture") Wystaw fakturę
-          li
-            a(href="/") Lista faktur
-        div(style={'border-top': 'solid black 1px'})        
-          p Zalogowano jako: 
-            a(href='/uzytkownik') #{user.username}
-          a(href="/log-out") Wyloguj
-      //- div(style={margin: 'auto'})
-      div#watch(style={display: "inline-block", flex: "1"})
-        block main
+  div(id='wrapper')
+    div(id='leftPanel')
+      ul
+        li
+          a(href="/wystaw-fakture") Wystaw fakturę
+        li
+          a(href="/") Lista faktur
+
+      div       
+        p Zalogowano jako: 
+          a(href='/uzytkownik') #{user.username}
+        a(href="/log-out") Wyloguj
+
+    div(id='main')
+      block main
