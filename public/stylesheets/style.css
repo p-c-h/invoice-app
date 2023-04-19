@@ -31,10 +31,6 @@ td {
   padding: 20px;
 }
 
-.paddingLBR {
-  padding: 0 20px 20px 20px;
-}
-
 .logo {
   display: inline-block;
   margin-bottom: 16px;
@@ -90,12 +86,36 @@ td {
 #leftPanel {
   flex-shrink: 0;
   background-color: #F5F5F5;
-  padding: 10px;
+  border-right: 1px solid #ccc;
+}
+
+.menuItem {
+  font-size: 0.9em;
+  gap: 10px;
+  margin-top: 1px;
+  padding: 20px;
+  background-color: #fff;
+  /* border-bottom: 1px solid #ccc; */
+  cursor: pointer;
+}
+
+.menuItem:first-child {
+  margin-top: 0;
+}
+
+.menuItem:hover, .active {
+  background-color: #eff5fb;
+  border-color: #3498db;
+  border-top-width: 2px;
+  border-top-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  padding-top: 18px;
+  padding-bottom: 18px;
 }
 
 #main {
   width: 100%;
-  border: 1px solid red;
   padding: 10px;
 }
 
@@ -286,6 +306,11 @@ form input:last-of-type {
 
   #wrapper {
     display: block;
+  }
+
+  #leftPanel {
+    border-right: 0;
+    border-bottom: 1px solid #F5F5F5;
   }
 
   .bars {
