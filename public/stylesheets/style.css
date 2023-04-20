@@ -89,13 +89,17 @@ td {
   border-right: 1px solid #ccc;
 }
 
+#menuBg {
+  padding-bottom: 1px;
+  background-color: #EEE;
+}
+
 .menuItem {
   font-size: 0.9em;
   gap: 10px;
   margin-top: 1px;
   padding: 20px;
   background-color: #fff;
-  /* border-bottom: 1px solid #ccc; */
   cursor: pointer;
 }
 
@@ -114,9 +118,17 @@ td {
   padding-bottom: 18px;
 }
 
+.onlyMobile {
+  display: none !important;
+}
+
 #main {
   width: 100%;
   padding: 10px;
+}
+
+.tdAlignLeft {
+  text-align: left;
 }
 
 .center {
@@ -268,6 +280,7 @@ form input:last-of-type {
   color: #fff;
   font-size: 0.9rem;
   padding: 15px;
+  margin-bottom: 10px;
   background-color: #3498db;
 }
 
@@ -288,7 +301,6 @@ form input:last-of-type {
 #invoiceList {
 	border: 2px solid rgb(200,200,200);
   table-layout: auto;
-
 }
 
 #invoiceList td, th {
@@ -303,18 +315,20 @@ form input:last-of-type {
 }
 
 @media (max-width: 600px) {
-
+  .bars {
+    display: inline-block;
+  }
+  
   #wrapper {
     display: block;
   }
 
   #leftPanel {
     border-right: 0;
-    border-bottom: 1px solid #F5F5F5;
   }
 
-  .bars {
-    display: inline-block;
+  .onlyMobile {
+    display: flex !important;
   }
 
   #accountControls {
