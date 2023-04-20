@@ -21,14 +21,23 @@ block content
 
   div(id='wrapper')
     div(id='leftPanel')
-      div(class='centerVert menuItem' onclick='location.href="/wystaw-fakture";')
-        span(class='iconSpace')
-          i(class="fa-regular fa-file-lines")
-        span Wystaw fakturę
-      div(class='centerVert menuItem' onclick='location.href="/";')
-        span(class='iconSpace')
-          i(class="fa-solid fa-list")
-        span Lista faktur
+      div(id='menuBg')
+        div(class='centerVert menuItem' onclick='location.href="/wystaw-fakture";')
+          span(class='iconSpace')
+            i(class="fa-regular fa-file-lines")
+          span Wystaw fakturę
+        div(class='centerVert menuItem' onclick='location.href="/";')
+          span(class='iconSpace')
+            i(class="fa-solid fa-list")
+          span Lista faktur
+        div(class='centerVert menuItem onlyMobile' onclick='location.href="/uzytkownik";')
+          span(class='iconSpace')
+            i(class='fa-regular fa-user')
+          span Konto użytkownika
+        div(class='centerVert menuItem onlyMobile' onclick='location.href="/log-out";')
+          span(class='iconSpace')
+            i(class='fa-solid fa-power-off')
+          span Wyloguj się
 
 
     div(id='main')
