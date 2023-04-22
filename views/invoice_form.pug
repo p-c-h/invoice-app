@@ -60,8 +60,8 @@ block main
 
     if monthsArr
       form(action="/miesiac-ksiegowy" method="POST")
-        p Miesiąc księgowy: 
-        select(name="accountingDate" onchange="this.closest('form').submit()")
+        label Miesiąc księgowy:
+        select(class='selectBig' name="accountingDate" onchange="this.closest('form').submit()")
           each item in monthsArr
             option(value=item.num selected=(item === monthsArr[1])) #{item.word}
 
@@ -71,11 +71,12 @@ block main
 
 
       div(id="buyerWrapper")
-        label(for="buyerInput") Nabywca: 
+        label(for='buyerInput') Nabywca: 
         input(type="text" id="buyerInput" required=(invoice===undefined))
-        div(id="dropdown")
-          div(id="dropdownItems")
-      button(type="button" id="showPopupBtn") Dodaj nowego kontrahenta
+        div(style={position: 'relative'})
+          div(id="dropdown")
+            div(id="dropdownItems")
+          button(type="button" id="showPopupBtn") Dodaj nowego kontrahenta
 
       ul(id="buyerSpace")
         if invoice   
