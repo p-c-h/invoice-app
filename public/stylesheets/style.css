@@ -1,12 +1,13 @@
 * {
   box-sizing: border-box;
+  outline-color: #3498db;
 }
 
 body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;  
-  font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   color: #333333;
   margin: 0;
 }
@@ -18,7 +19,7 @@ a {
 table {
 	border-collapse: collapse;
 	letter-spacing: 1px;
-	font-size: 0.8rem;
+	font-size: 0.8em;
 }
 
 td {
@@ -27,8 +28,27 @@ td {
   height: 35px;
 }
 
-.padding {
-  padding: 20px;
+button {
+  display: block;
+  margin-bottom: 12px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+input {
+  display: block;
+}
+
+select {
+  display: block;
+  color: #333;
+}
+
+.selectBig {
+  font-size: 0.9em;
 }
 
 .logo {
@@ -73,7 +93,7 @@ td {
   width: 15px;
 }
 
-.bars {
+#bars {
   display: none;
   width: 15px;
 }
@@ -83,10 +103,12 @@ td {
   display: flex;
 }
 
-#leftPanel {
+#menu {
   flex-shrink: 0;
   background-color: #F5F5F5;
   border-right: 1px solid #ccc;
+  overflow: hidden;
+  transition: max-height 0.4s ease-in;
 }
 
 #menuBg {
@@ -105,17 +127,6 @@ td {
 
 .menuItem:first-child {
   margin-top: 0;
-}
-
-.menuItem:hover, .active {
-  background-color: #eff5fb;
-  border-color: #3498db;
-  border-top-width: 2px;
-  border-top-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-style: solid;
-  padding-top: 18px;
-  padding-bottom: 18px;
 }
 
 .onlyMobile {
@@ -147,17 +158,6 @@ td {
 	border: 1px solid #DDD;
   background-color: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
-label,
-input,
-button {
-  display: block;
-  margin-bottom: 12px;
-}
-
-form input:last-of-type {
-  margin-bottom: 30px;
 }
 
 .signInInput {
@@ -227,20 +227,16 @@ form input:last-of-type {
   display: none;
 }
 
-#buyerWrapper {
-  position: relative;
-}
-
 #dropdown {
   position: absolute;
-  top: 40px;
+  top: 0;
   left: 0;
   right: 0;
   background-color: white;
   display: none;
   max-height: 100px;
   width: 200px;
-  border: 1px solid black;
+  border: 1px solid #3498db;
   overflow-y: scroll;  
 }
 
@@ -278,7 +274,7 @@ form input:last-of-type {
   gap: 10px;
   flex-wrap: wrap;
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 0.9em;
   padding: 15px;
   margin-bottom: 10px;
   background-color: #3498db;
@@ -314,8 +310,21 @@ form input:last-of-type {
   white-space: normal !important;
 }
 
+@media (min-width: 601px) {
+  .menuItem:hover, .active {
+    background-color: #eff5fb;
+    border-color: #3498db;
+    border-top-width: 2px;
+    border-top-style: solid;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+}
+
 @media (max-width: 600px) {
-  .bars {
+  #bars {
     display: inline-block;
   }
   
@@ -323,7 +332,8 @@ form input:last-of-type {
     display: block;
   }
 
-  #leftPanel {
+  #menu {
+    max-height: 0;
     border-right: 0;
   }
 
