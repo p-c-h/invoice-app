@@ -1,6 +1,9 @@
-extends layout 
+extends layout
 
 block content
+
+  script(defer src='/javascripts/dashboard.js')
+
   div(id='header')
     a(class='logo' href='/') Fakturownia
     div(id='accountControls')
@@ -16,17 +19,17 @@ block content
           span(class='iconSpace')
             i(class='fa-solid fa-power-off')
           | Wyloguj się
-    div(class='bars')
+    div(id='bars')
       i(class='fa-solid fa-bars')
 
   div(id='wrapper')
-    div(id='leftPanel')
+    div(id='menu')
       div(id='menuBg')
-        div(class='centerVert menuItem' onclick='location.href="/wystaw-fakture";')
+        div(class=`centerVert menuItem ${isInvoiceForm===true ? 'active' : ''}` onclick='location.href="/wystaw-fakture";')
           span(class='iconSpace')
             i(class="fa-regular fa-file-lines")
           span Wystaw fakturę
-        div(class='centerVert menuItem' onclick='location.href="/";')
+        div(class=`centerVert menuItem ${isInvoiceList===true ? 'active' : ''}` onclick='location.href="/";')
           span(class='iconSpace')
             i(class="fa-solid fa-list")
           span Lista faktur
@@ -38,7 +41,6 @@ block content
           span(class='iconSpace')
             i(class='fa-solid fa-power-off')
           span Wyloguj się
-
 
     div(id='main')
       block main
