@@ -2,7 +2,7 @@ const { body, validationResult } = require("express-validator");
 const async = require("async");
 const Buyer = require("../models/buyer");
 const Invoice = require("../models/invoice");
-const { formatPrice } = require("../utils/utils");
+const { formatPrice, formatAccNum } = require("../utils/utils");
 const path = require("path");
 
 var pdfMake = require("pdfmake/build/pdfmake.js");
@@ -116,6 +116,7 @@ exports.invoice_create_get = (req, res, next) => {
         ////////
         cat: null,
         accountingDate,
+        isInvoiceForm: true,
       });
     }
   );
@@ -321,6 +322,7 @@ exports.invoice_list = function (req, res, next) {
         month,
         invoices,
         formatPrice,
+        isInvoiceList: true,
       });
     });
 };
@@ -374,13 +376,6 @@ exports.invoice_pdf = function (req, res, next) {
 
       const month = result.transactionDate.getMonth() + 1;
       const year = result.transactionDate.getFullYear();
-
-      function formatAccNum(accNum) {
-        const firstTwo = accNum.slice(0, 2);
-        const rest = accNum.slice(2);
-        const fours = rest.match(/.{1,4}/g);
-        return [firstTwo, ...fours].join(" ");
-      }
 
       const invoiceItemsRows = [];
       let lp = 1;
