@@ -16,16 +16,31 @@ a {
   color: #00B7FF;
 }
 
+ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
 table {
 	border-collapse: collapse;
 	letter-spacing: 1px;
 	font-size: 0.8em;
+  margin-bottom: 12px;
+}
+
+table select {
+  margin-bottom: 0;
 }
 
 td {
   text-align: center;
   min-width: 35px;
   height: 35px;
+}
+
+h3 {
+  margin-top: 0;
 }
 
 button {
@@ -40,11 +55,13 @@ label {
 
 input {
   display: block;
+  margin-bottom: 12px;
 }
 
 select {
   display: block;
   color: #333;
+  margin-bottom: 12px;
 }
 
 .selectBig {
@@ -152,6 +169,11 @@ select {
   align-items: center;
 }
 
+.spaceBetween {
+  display: flex;
+  justify-content: space-between;
+}
+
 .signInBox {
 	max-width: 350px;
 	padding: 50px;
@@ -170,12 +192,18 @@ select {
   border-bottom-color: #00B7FF;
 }
 
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
 .removeButton {
-  border: 1px solid blue;
+  border: 1px solid red;
   width: 1.5em;
   height: 1.5em;
   border-radius: 15px;
-  color: blue;
+  color: red;
 }
 
 /* Tooltip container */
@@ -192,13 +220,12 @@ select {
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
+  width: 200px;
+  background-color: #fff;
+  color: #333;
   text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
- 
+  padding: 5px;
+  border: 1px solid red;
   position: absolute;
   right: 105%;
   z-index: 1;
@@ -229,6 +256,7 @@ select {
 
 #dropdown {
   position: absolute;
+  margin-top: -12px; /* Compensate for global input margin-bottom */
   top: 0;
   left: 0;
   right: 0;
@@ -238,6 +266,25 @@ select {
   width: 200px;
   border: 1px solid #3498db;
   overflow-y: scroll;  
+}
+
+.dropdownItem {
+  padding: 5px;
+  border-top: 1px solid #3498db;
+}
+
+.dropdownItem:first-of-type {
+  border-top: none;
+}
+
+.dropdownItem:hover {
+  color: #fff;
+  background-color: #2980b9;
+  cursor: pointer;
+}
+
+td>input {
+  margin: auto;
 }
 
 /* button styles ⬇️ */
@@ -254,13 +301,22 @@ select {
   transition: background-color 0.3s ease;
 }
 
-
 .flat-button:hover {
   background-color: #2980b9;
 }
 
 .flat-button:active {
   background-color: #1e6fa0;
+}
+
+.small {
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 2px;
+}
+
+#summary {
+  margin-bottom: 12px;
 }
 
 .error {
@@ -308,6 +364,14 @@ select {
 #widest {
   width: 100%;
   white-space: normal !important;
+}
+
+/* ⬇️ Utils */
+
+.divider {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #ccc;
 }
 
 @media (min-width: 601px) {
