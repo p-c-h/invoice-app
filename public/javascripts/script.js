@@ -77,6 +77,7 @@ function populateDropdown(buyers) {
       displaySelectedBuyer(buyer);
       dropdown.style.display = "none";
     });
+    li.classList.add("dropdownItem");
     li.textContent = buyer.businessName;
     ul.appendChild(li);
   });
@@ -312,51 +313,47 @@ function addFset(received) {
 
   fset.id = fsetId;
   fset.innerHTML = `<td>
-    <label for="itemName${fsetId}">Nazwa towaru lub usługi:</label>
     <input type="text" id="itemName${fsetId}" name="itemName${fsetId}" onfocusout="storeValue(this)" value="${
     received === undefined ? "" : received.itemName
   }" required>
   </td>
 
   <td>
-    <label for="gtu${fsetId}">GTU:</label>
     <input type="text" id="gtu${fsetId}" name="gtu${fsetId}" onfocusout="storeValue(this)" value="${
     received === undefined ? "" : received.gtu
   }" required>
   </td>
 
   <td>
-    <label for="itemQuantity${fsetId}">Ilość:</label>
     <input type="number" id="itemQuantity${fsetId}" name="itemQuantity${fsetId}" min="1" step="1" onfocusout="focusOutController(this)" value="${
     received === undefined ? "" : received.itemQuantity
   }" required>
   </td>
 
   <td>
-    <label for="unit${fsetId}">Jednostka</label>
     <input type="text" id="unit${fsetId}" name="unit${fsetId}" onfocusout="storeValue(this)" value="${
     received === undefined ? "" : received.unit
   }" required>
   </td>
 
   <td>
-    <label for="singleItemPrice${fsetId}">Cena jedn.:</label>
     <input type="number" id="singleItemPrice${fsetId}" name="singleItemPrice${fsetId}" min="0" step="0.01" onfocusout="focusOutController(this)" value="${
     received === undefined ? "" : received.singleItemPrice
   }" required>
   </td>
 
   <td>
-    Stawka VAT:
-    <select id="taxRate${fsetId}" name="taxRate${fsetId}" onchange="focusOutController(this)" value="${
+    <div class="center">
+      <select id="taxRate${fsetId}" name="taxRate${fsetId}" onchange="focusOutController(this)" value="${
     received === undefined ? "" : received.taxRate
   }">
-      <option value=0.23>23%</option>
-      <option value=0.08>8%</option>
-      <option value=0.05>5%</option>
-      <option value=0>0%</option>
-      <option value=0>zw.</option>
-    </select>
+        <option value=0.23>23%</option>
+        <option value=0.08>8%</option>
+        <option value=0.05>5%</option>
+        <option value=0>0%</option>
+        <option value=0>zw.</option>
+      </select>
+    </div>
   </td>
 
   <td>
