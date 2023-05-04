@@ -29,10 +29,6 @@ table {
   margin-bottom: 12px;
 }
 
-table select {
-  margin-bottom: 0;
-}
-
 td {
   text-align: center;
   min-width: 35px;
@@ -49,19 +45,25 @@ button {
 }
 
 label {
-  display: block;
   margin-bottom: 8px;
 }
 
+label.marginRight {
+  display: inline-block;
+  margin-right: 10px;
+}
+
 input {
-  display: block;
   margin-bottom: 12px;
 }
 
 select {
-  display: block;
   color: #333;
   margin-bottom: 12px;
+}
+
+table select {
+  margin-bottom: 0;
 }
 
 .selectBig {
@@ -192,10 +194,26 @@ select {
   border-bottom-color: #00B7FF;
 }
 
-.flex-container {
+.flexContainer {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.flexContainer .col {
+  flex: 1;
+}
+
+.flexContainer .col.small {
+  max-width: 400px;
+}
+
+#buyerWrapper {
+  display: inline-block;
+}
+
+#buyerInput {
+  width: 100%;
 }
 
 .removeButton {
@@ -254,6 +272,10 @@ select {
   display: none;
 }
 
+.reference {
+  position: relative;
+}
+
 #dropdown {
   position: absolute;
   margin-top: -12px; /* Compensate for global input margin-bottom */
@@ -309,7 +331,7 @@ td>input {
   background-color: #1e6fa0;
 }
 
-.small {
+.flat-button.small {
   padding: 6px 12px;
   font-size: 14px;
   border-radius: 2px;
@@ -369,10 +391,64 @@ td>input {
 /* ⬇️ Utils */
 
 .divider {
-  margin-top: 6px;
-  margin-bottom: 6px;
+  margin-top: 12px;
+  margin-bottom: 12px;
   border-bottom: 1px solid #ccc;
 }
+
+/* ⬇️ alignedInputGroup */
+
+.alignedInputGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+}
+
+.alignedInputGroup label {
+  display: inline-block;
+  width: 150px;
+  text-align: right;
+}
+
+.alignedInputGroup.autoWidth label {
+  display: inline-block;
+  width: auto;
+  text-align: right;
+}
+
+.alignedInputGroup input {
+  align-self: center;
+}
+
+.alignedInputGroup .container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+}
+
+/* ⬆ alignedInputGroup */
+
+/* ⬇ alignedLabelInput - both label and input */
+
+.alignedLabelInput {
+  display: inline-block;
+}
+
+.alignedLabelInput>div {
+  display: flex;
+  gap: 0 10px;
+  flex-wrap: wrap;
+}
+
+.alignedLabelInput label {
+  flex: 1;
+}
+
+.alignedLabelInput select,.alignedLabelInput input {
+  width: 120px;
+}
+
+/* ⬆ alignedLabelInput - both label and input */
 
 @media (min-width: 601px) {
   .menuItem:hover, .active {
@@ -407,5 +483,19 @@ td>input {
 
   #accountControls {
     display: none;
+  }
+
+  .flexContainer {
+    display: block;
+  }
+
+  .alignedInputGroup {
+    display: unset;
+  }
+
+  .alignedInputGroup label {
+    display: block;
+    width: unset;
+    text-align: unset;
   }
 }
