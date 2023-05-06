@@ -1,6 +1,63 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+:root {
+  --font-basic: #333;
+  --light-blue: #3498db;
+  --dim-blue: #2980b9;
+  --bg-bone: #F5F5F5;
+  --border-light: #ccc;
+}
+
 * {
   box-sizing: border-box;
-  outline-color: #3498db;
+  outline-color: var(--light-blue,#3498db);
 }
 
 body {
@@ -8,12 +65,12 @@ body {
   display: flex;
   flex-direction: column;  
   font-family: Helvetica, Arial, sans-serif;
-  color: #333333;
+  color: var(--font-basic, #333);
   margin: 0;
 }
 
 a {
-  color: #00B7FF;
+  color: var(--light-blue, #3498db);
 }
 
 ul {
@@ -22,17 +79,34 @@ ul {
   list-style-type: none;
 }
 
+/* ⬇ Table stuff */
+
 table {
-	border-collapse: collapse;
-	letter-spacing: 1px;
+  border: 2px solid rgb(200,200,200);
+  letter-spacing: 1px;
 	font-size: 0.8em;
   margin-bottom: 12px;
+}
+
+.tableOverflowWrapper {
+  overflow: scroll;
+  position: relative; /* fixes partial no-scroll on devtools mobile 75% when there are elements above and below */
 }
 
 td {
   text-align: center;
   min-width: 35px;
   height: 35px;
+  border: 1px solid rgb(190,190,190);
+  padding: 10px 10px;
+}
+
+table input{
+  width: 100%; /* prevents inputs from adopting their own width and messing up everything */
+}
+
+#widestTH {
+  width: 100%; /* makes the invoice item th the widest when in web view */
 }
 
 h3 {
@@ -54,11 +128,15 @@ label.marginRight {
 }
 
 input {
+  padding: 2px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 3px;
   margin-bottom: 12px;
 }
 
 select {
-  color: #333;
+  color: var(--font-basic, #333);
   margin-bottom: 12px;
 }
 
@@ -75,13 +153,13 @@ table select {
   margin-bottom: 16px;
   margin-top: 0;
   font-family: 'Exo 2', Arial, sans-serif;
-  color: #3498db;
+  color: var(--light-blue,#3498db);
   text-decoration: none;
   font-size: 2em;
 }
 
 .logo:hover {
-  color: #2980b9;
+  color: var(--dim-blue, #2980b9);
 }
 
 .logo:active {
@@ -124,8 +202,8 @@ table select {
 
 #menu {
   flex-shrink: 0;
-  background-color: #F5F5F5;
-  border-right: 1px solid #ccc;
+  background-color: var(--bg-bone, #F5F5F5);
+  border-right: 1px solid var(--border-light, #ccc);
   overflow: hidden;
   transition: max-height 0.4s ease-in;
 }
@@ -179,7 +257,7 @@ table select {
 .signInBox {
 	max-width: 350px;
 	padding: 50px;
-	border: 1px solid #DDD;
+	border: 1px solid var(--border-light);
   background-color: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
@@ -191,7 +269,7 @@ table select {
 }
 
 .signInInput:focus {
-  border-bottom-color: #00B7FF;
+  border-bottom-color: var(--light-blue);
 }
 
 .flexContainer {
@@ -208,6 +286,10 @@ table select {
   max-width: 400px;
 }
 
+.flexContainer.noMarginBottom {
+  margin-bottom: 0; /* So there's no white space left on invoice_form */
+}
+
 #buyerWrapper {
   display: inline-block;
 }
@@ -216,26 +298,15 @@ table select {
   width: 100%;
 }
 
-.removeButton {
-  border: 1px solid red;
-  width: 1.5em;
-  height: 1.5em;
-  border-radius: 15px;
-  color: red;
-}
-
-/* Tooltip container */
 .tooltip {
   position: relative;
   display: inline-flex;
   justify-content: center;
+  align-items: center;
 }
-
 .tooltip:hover {
   cursor: pointer;
 }
-
-/* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 200px;
@@ -245,7 +316,7 @@ table select {
   padding: 5px;
   border: 1px solid red;
   position: absolute;
-  right: 105%;
+  right: 130%;
   z-index: 1;
 }
 
@@ -258,7 +329,7 @@ table select {
   transform: translate(-50%, -50%);
   background-color: white;
   padding: 20px;
-  border: 1px solid black;
+  border: 1px solid var(--border-light);
 }
 
 #overlay {
@@ -278,20 +349,20 @@ table select {
 
 #dropdown {
   position: absolute;
-  margin-top: -12px; /* Compensate for global input margin-bottom */
+  margin-top: -12px; /* account for 12px global input margin-bottom */
   top: 0;
   left: 0;
   right: 0;
   background-color: white;
   display: none;
-  max-height: 100px;
-  width: 200px;
+  max-height: 9em;
+  width: 100%;
   border: 1px solid #3498db;
   overflow-y: scroll;  
 }
 
 .dropdownItem {
-  padding: 5px;
+  padding: 1em;
   border-top: 1px solid #3498db;
 }
 
@@ -301,7 +372,7 @@ table select {
 
 .dropdownItem:hover {
   color: #fff;
-  background-color: #2980b9;
+  background-color: var(--dim-blue);
   cursor: pointer;
 }
 
@@ -314,7 +385,7 @@ td>input {
   padding: 12px 20px;
   border: none;
   border-radius: 4px;
-  background-color: #3498db;
+  background-color: var(--light-blue);
   color: #fff;
   font-size: 16px;
   text-align: center;
@@ -324,7 +395,7 @@ td>input {
 }
 
 .flat-button:hover {
-  background-color: #2980b9;
+  background-color: var(--dim-blue);
 }
 
 .flat-button:active {
@@ -335,6 +406,24 @@ td>input {
   padding: 6px 12px;
   font-size: 14px;
   border-radius: 2px;
+}
+
+.flat-button.pushRight {
+  margin-left: auto;
+}
+
+.multipleBtnY {
+  width: max-content;
+  margin: auto;
+  flex-direction: column;
+  align-items: center;
+}
+.multipleBtnY>* {
+  width: 100%;
+}
+
+#popup .multipleBtnY {
+  margin-top: 24px;
 }
 
 #summary {
@@ -355,7 +444,7 @@ td>input {
   font-size: 0.9em;
   padding: 15px;
   margin-bottom: 10px;
-  background-color: #3498db;
+  background-color: var(--light-blue);
 }
 
 .monthBtn {
@@ -365,17 +454,12 @@ td>input {
 }
 
 #selectedMonth {
-  color:#3498db;
+  color: var(--light-blue);
   background-color: #fff;
   border-radius: 3px;
 }
 
 /* invoice list ⬇️ */
-
-#invoiceList {
-	border: 2px solid rgb(200,200,200);
-  table-layout: auto;
-}
 
 #invoiceList td, th {
   white-space: nowrap;
@@ -383,12 +467,20 @@ td>input {
   padding: 10px 20px;
 }
 
-#widest {
+.widest {
   width: 100%;
   white-space: normal !important;
 }
 
 /* ⬇️ Utils */
+
+.title {
+  font-size: 1.2em;
+  font-weight: bold;
+} 
+.title.marginBottom {
+  margin-bottom: 1.2em;
+}
 
 .divider {
   margin-top: 12px;
@@ -396,9 +488,17 @@ td>input {
   border-bottom: 1px solid #ccc;
 }
 
+.highlight {
+  color: var(--light-blue);
+}
+
+.fitContent {
+  display: inline-block;
+}
+
 /* ⬇️ alignedInputGroup */
 
-.alignedInputGroup {
+.alignedInputGroup, .alignedInputGroup .container {
   display: flex;
   flex-wrap: wrap;
   gap: 0 10px;
@@ -418,12 +518,6 @@ td>input {
 
 .alignedInputGroup input {
   align-self: center;
-}
-
-.alignedInputGroup .container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 10px;
 }
 
 /* ⬆ alignedInputGroup */
@@ -450,10 +544,12 @@ td>input {
 
 /* ⬆ alignedLabelInput - both label and input */
 
+/* ⬇ test */
+
 @media (min-width: 601px) {
   .menuItem:hover, .active {
     background-color: #eff5fb;
-    border-color: #3498db;
+    border-color: var(--light-blue);
     border-top-width: 2px;
     border-top-style: solid;
     border-bottom-width: 2px;
@@ -497,5 +593,9 @@ td>input {
     display: block;
     width: unset;
     text-align: unset;
+  }
+
+  .flat-button.pushRight {
+    margin-left: unset;
   }
 }
