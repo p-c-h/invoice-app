@@ -18,27 +18,24 @@ block main
     div(class='monthBtn center centerVert' onclick=`location.href='/lista-faktur/${year + 1}/1';`)
       span 01.#{year + 1}&nbsp;>>
 
-  div(style={overflow: 'scroll'})
-    if invoices.length
-      div#test
-        table(id='invoiceList')
-          thead
-            tr
-              th(class='tdAlignLeft') Nr faktury 
-              th Data sprzedaży
-              th Data wystawienia
-              th(class='tdAlignLeft') Kontrahent
-              th Brutto
-          tbody
-            each invoice in invoices
-              tr 
-                td(class='tdAlignLeft') 
-                  a(href=`/faktury/${invoice._id}`) #{invoice.invoiceNumber}/#{month}/#{year}
-                td #{formatDate(invoice.transactionDate)}
-                td #{formatDate(invoice.dateCreated)}
-                td(id='widest' class='tdAlignLeft') #{invoice.buyer.businessName}
-                td(style={'white-space': 'nowrap'}) #{formatPrice(invoice.totals.grossTotal)} PLN
-    else 
-      p W tym miesiącu nie wystawiono żadnych faktur.
-
-
+  if invoices.length
+    div(class='tableOverflowWrapper')
+      table(id='invoiceList')
+        thead
+          tr
+            th(class='tdAlignLeft') Nr faktury 
+            th Data sprzedaży
+            th Data wystawienia
+            th(class='tdAlignLeft') Kontrahent
+            th Brutto
+        tbody
+          each invoice in invoices
+            tr 
+              td(class='tdAlignLeft') 
+                a(href=`/faktury/${invoice._id}`) #{invoice.invoiceNumber}/#{month}/#{year}
+              td #{formatDate(invoice.transactionDate)}
+              td #{formatDate(invoice.dateCreated)}
+              td(class='widest' class='tdAlignLeft') #{invoice.buyer.businessName}
+              td(style={'white-space': 'nowrap'}) #{formatPrice(invoice.totals.grossTotal)} PLN
+  else 
+    p W tym miesiącu nie wystawiono żadnych faktur.
