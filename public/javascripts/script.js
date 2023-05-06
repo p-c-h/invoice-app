@@ -355,10 +355,9 @@ function addFset(received) {
       </select>
     </div>
   </td>
-
   <td>
     <div class="removeButton tooltip">
-      <span>x</span>
+      <span>❌</span>
       <span class="tooltiptext">Faktura musi posiadać przynajmniej jedną pozycję</span>
     </div>
   </td>
