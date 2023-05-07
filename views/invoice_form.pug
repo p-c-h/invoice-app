@@ -156,8 +156,9 @@ block main
           input(type='hidden' name='taxTotal' id='taxTotal' value=(invoice===undefined ? '' : invoice.totals.taxTotal))
           input(type='hidden' name='grossTotal' id='grossTotal' value=(invoice===undefined ? '' : invoice.totals.grossTotal))
 
-          input(type="submit" class='flat-button' id="submitButton" value="Zapisz")
-          if invoice
-            input(type="button" class='flat-button' onclick=`location.href="/faktury/${invoice._id}";` value="Anuluj")
+          div(class='multipleBtnY')
+            input(type="submit" class='flat-button' id="submitButton" value="Zapisz")
+            if invoice
+              input(type="button" class='flat-button' onclick=`location.href="/faktury/${invoice._id}";` value="Anuluj")
 
   script(defer src='/javascripts/script.js' data-city=user.city)
