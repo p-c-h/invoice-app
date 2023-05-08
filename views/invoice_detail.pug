@@ -2,22 +2,6 @@ extends dashboard
 
 block main
   style.
-    table {
-      border-collapse: collapse;
-      border: 2px solid rgb(200,200,200);
-      letter-spacing: 1px;
-      font-size: 0.8rem;
-      width: 100%;
-    }
-
-    td, th {
-      border: 1px solid rgb(190,190,190);
-      padding: 10px 20px;
-    }
-
-    td {
-      text-align: center;
-    }
 
     #deleteBtnWrapper {
       position: relative;
@@ -36,28 +20,36 @@ block main
 
   - const formatDate = d => [d.getDate().toString().padStart(2, '0'), (d.getMonth() + 1).toString().padStart(2, '0'), d.getFullYear()].join('-')
 
-  p Faktura VAT nr: #{invoice.invoiceNumber}/#{month}/#{year}
+  div(class='title') Faktura VAT nr: #{invoice.invoiceNumber}/#{month}/#{year}
+  div(class='divider')
 
-  h3 Nabywca:
-  ul 
-    li #{invoice.buyer.businessName}
-    li #{invoice.buyer.nip}
-    li #{invoice.buyer.adress}
-    li #{invoice.buyer.areaCode} #{invoice.buyer.city}
+  div(class='flexContainer')
+    div(class='col')
+      div(class='alignedInputGroup autoWidth')
+        div(class='marginBottom-sm')
+          strong Nabywca:
+        ul(class='marginBottom-md')
+          li #{invoice.buyer.businessName}
+          li #{invoice.buyer.nip}
+          li #{invoice.buyer.adress}
+          li #{invoice.buyer.areaCode} #{invoice.buyer.city}
+    div(class='col')
+      div(class='alignedInputGroup')
+        div(class='marginBottom-sm')
+          strong Data wystawienia:
+        div #{formatDate(invoice.dateCreated)}
+      div(class='alignedInputGroup')
+        div(class='marginBottom-sm')
+          strong Data sprzedaży:
+        div #{formatDate(invoice.transactionDate)}
+      div(class='alignedInputGroup')
+        div(class='marginBottom-sm') Termin płatności:
+        div #{formatDate(invoice.paymentDue)}
+      div(class='alignedInputGroup')
+        div(class='marginBottom-sm') Miejsce wystawienia faktury:
+        div #{invoice.issuePlace}
 
-  p Data wystawienia:
-  p #{formatDate(invoice.dateCreated)}
-
-  p Data sprzedaży: 
-  p #{formatDate(invoice.transactionDate)}
-
-  p Termin płatności: 
-  p #{formatDate(invoice.paymentDue)}
-
-  p Miejsce wystawienia faktury:
-  p #{invoice.issuePlace}
-
-  table
+  //- table
     thead 
       tr 
         th Nazwa towaru lub usługi 
