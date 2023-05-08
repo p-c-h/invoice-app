@@ -61,15 +61,18 @@ block main
       div(class='flexContainer')
         div(class='col')
           div(id="buyerWrapper")
-            div(class='alignedInputGroup autoWidth')
-              strong
-                label(for='buyerInput') Nabywca: 
-              div
-                input(type="text" id="buyerInput" required=(invoice===undefined))
-                div(class='reference')
-                  div(id="dropdown")
-                    div(id="dropdownItems")
-                  button(type="button" id="showPopupBtn" class='flat-button small') + Dodaj nowego kontrahenta
+            div(class='alignedLabelInput')
+              div(class='container')
+                label(for='buyerInput')
+                  strong Nabywca:
+                div
+                  input(type="text" id="buyerInput" required=(invoice===undefined))
+                  div(class='reference')
+                    div(id="dropdown")
+                      div(id="dropdownItems")
+              div(class='container')
+                div(class='noMarginBottom')
+                button(type="button" id="showPopupBtn" class='flat-button small') + Dodaj nowego kontrahenta
 
 
                 ul(id="buyerSpace")
@@ -82,13 +85,13 @@ block main
 
         div(class='col')
           div(class='alignedInputGroup')
-            strong
-              label(for='dateCreated') Data wystawienia: 
+            label(for='dateCreated') 
+              strong Data wystawienia:
             input(type='date' name='dateCreated' id='dateCreated' value=(invoice===undefined ? currentDate : formatDate(invoice.dateCreated)) required)
 
           div(class='alignedInputGroup')
-            strong
-              label(for='transactionDate') Data sprzedaży: 
+            label(for='transactionDate') 
+              strong Data sprzedaży: 
             input(type='date' name='transactionDate' id='transactionDate' value=(invoice===undefined ? currentDate : formatDate(invoice.transactionDate)) required)
 
           div(class='alignedInputGroup')
@@ -125,15 +128,15 @@ block main
 
       div(class='divider')
 
-      div(class='flexContainer noMarginBottom')
+      div(class='flexContainer')
         div(class='col')
           div(class='alignedLabelInput')
-            div
+            div(class='container')
               label(for='paymentMethod') Sposób zapłaty:
               select(name='paymentMethod' id="paymentMethod")
                 option(value="transfer" selected=(invoice===undefined || invoice.paymentMethod==="transfer")) Przelew
                 option(value="cash" selected=(invoice && invoice.paymentMethod==="cash")) Gotówka
-            div
+            div(class='container')
               label Zapłacono PLN:
               input(name="paid" type="number" min="0" step="0.01" value=(invoice===undefined ? '0' : invoice.paid))
         div(class='col small')
