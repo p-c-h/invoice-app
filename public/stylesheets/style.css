@@ -53,6 +53,9 @@ table {
   --dim-blue: #2980b9;
   --bg-bone: #F5F5F5;
   --border-light: #ccc;
+  --margin-bottom-sm: 0.5em;
+  --margin-bottom-md: 1em;
+  --margin-bottom-lg: 1.5em;
 }
 
 * {
@@ -113,39 +116,32 @@ h3 {
   margin-top: 0;
 }
 
-button {
-  display: block;
-  margin-bottom: 12px;
+strong {
+  font-weight: bold;
 }
 
-label {
-  margin-bottom: 8px;
+button {
+  display: block;
 }
+
+/* label {
+  margin-bottom: 8px;
+} */
 
 label.marginRight {
   display: inline-block;
   margin-right: 10px;
 }
 
-input {
+input, select {
   padding: 2px;
   border-width: 1px;
   border-style: solid;
   border-radius: 3px;
-  margin-bottom: 12px;
 }
 
 select {
   color: var(--font-basic, #333);
-  margin-bottom: 12px;
-}
-
-table select {
-  margin-bottom: 0;
-}
-
-.selectBig {
-  font-size: 0.9em;
 }
 
 .logo {
@@ -275,23 +271,19 @@ table select {
 .flexContainer {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 30px;
 }
 
 .flexContainer .col {
   flex: 1;
+  margin-bottom: var(--margin-bottom-md);
 }
 
 .flexContainer .col.small {
   max-width: 400px;
 }
 
-.flexContainer.noMarginBottom {
-  margin-bottom: 0; /* So there's no white space left on invoice_form */
-}
-
-#buyerWrapper {
-  display: inline-block;
+.noMarginBottom {
+  margin-bottom: 0 !important;
 }
 
 #buyerInput {
@@ -496,28 +488,40 @@ td>input {
   display: inline-block;
 }
 
+.marginBottom-sm {
+  margin-bottom: var(--margin-bottom-sm, 0.5em);
+}
+.marginBottom-md {
+  margin-bottom: var(--margin-bottom-md, 0.5em);
+}
+.marginBottom-lg {
+  margin-bottom: var(--margin-bottom-lg, 1.5em);
+}
+
 /* ⬇️ alignedInputGroup */
 
-.alignedInputGroup, .alignedInputGroup .container {
+.alignedInputGroup, .alignedInputGroup .container, .flexWrapGap {
   display: flex;
   flex-wrap: wrap;
   gap: 0 10px;
 }
+.alignedInputGroup {
+  margin-bottom: var(--margin-bottom-md);
+}
 
-.alignedInputGroup label {
+.alignedInputGroup>:first-child { /* Used to be .alignedInputGroup label but changed it so it could be used for non label elems in e.g. invoice_detail */
   display: inline-block;
   width: 150px;
   text-align: right;
+  align-self: center;
 }
-
-.alignedInputGroup.autoWidth label {
+.alignedInputGroup.autoWidth>:first-child {
   display: inline-block;
   width: auto;
   text-align: right;
 }
-
-.alignedInputGroup input {
-  align-self: center;
+.alignedInputGroup input { /* didn't change it to .alignedInputGroup>:nth-child(2) because sometimes .container is the 2nd child */
+  align-self:flex-end;
 }
 
 /* ⬆ alignedInputGroup */
@@ -528,17 +532,19 @@ td>input {
   display: inline-block;
 }
 
-.alignedLabelInput>div {
+.alignedLabelInput>.container {
   display: flex;
   gap: 0 10px;
   flex-wrap: wrap;
+  margin-bottom: var(--margin-bottom-md);
 }
 
-.alignedLabelInput label {
+.alignedLabelInput>.container>:first-child {
+  align-self: center;
   flex: 1;
 }
 
-.alignedLabelInput select,.alignedLabelInput input {
+.alignedLabelInput select,.alignedLabelInput input, .alignedLabelInput button {
   width: 120px;
 }
 
@@ -585,14 +591,19 @@ td>input {
     display: block;
   }
 
-  .alignedInputGroup {
-    display: unset;
+  .flexContainer .col {
+    margin-bottom: var(--margin-bottom-lg);
   }
 
-  .alignedInputGroup label {
+  .alignedInputGroup {
     display: block;
-    width: unset;
-    text-align: unset;
+  }
+
+  .alignedInputGroup>:first-child {
+    display: block;
+    width: initial;
+    text-align: initial;
+    margin-bottom: var(--margin-bottom-sm);
   }
 
   .flat-button.pushRight {
