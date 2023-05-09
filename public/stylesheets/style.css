@@ -53,9 +53,13 @@ table {
   --dim-blue: #2980b9;
   --bg-bone: #F5F5F5;
   --border-light: #ccc;
+
   --margin-bottom-sm: 0.5em;
   --margin-bottom-md: 1em;
   --margin-bottom-lg: 1.5em;
+
+  --gap-sm: 0.5em;
+  --gap-md: 1em;
 }
 
 * {
@@ -268,6 +272,15 @@ select {
   border-bottom-color: var(--light-blue);
 }
 
+.flexWrapGap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+}
+.flexWrapGap .centerSelf {
+  align-self: center;
+}
+
 .flexContainer {
   display: flex;
   flex-wrap: wrap;
@@ -284,10 +297,6 @@ select {
 
 .noMarginBottom {
   margin-bottom: 0 !important;
-}
-
-#buyerInput {
-  width: 100%;
 }
 
 .tooltip {
@@ -341,20 +350,20 @@ select {
 
 #dropdown {
   position: absolute;
-  margin-top: -12px; /* account for 12px global input margin-bottom */
   top: 0;
   left: 0;
   right: 0;
   background-color: white;
   display: none;
-  max-height: 9em;
+  max-height: 6em;
   width: 100%;
   border: 1px solid #3498db;
-  overflow-y: scroll;  
+  overflow-y: scroll;
+  z-index: 1;  
 }
 
 .dropdownItem {
-  padding: 1em;
+  padding: 0.5em;
   border-top: 1px solid #3498db;
 }
 
@@ -407,8 +416,8 @@ td>input {
 .multipleBtnY {
   width: max-content;
   margin: auto;
-  flex-direction: column;
-  align-items: center;
+  /* flex-direction: column;
+  align-items: center; */
 }
 .multipleBtnY>* {
   width: 100%;
@@ -466,14 +475,6 @@ td>input {
 
 /* ⬇️ Utils */
 
-.title {
-  font-size: 1.2em;
-  font-weight: bold;
-} 
-.title.marginBottom {
-  margin-bottom: 1.2em;
-}
-
 .divider {
   margin-top: 12px;
   margin-bottom: 12px;
@@ -484,7 +485,7 @@ td>input {
   color: var(--light-blue);
 }
 
-.fitContent {
+.inlineBlock {
   display: inline-block;
 }
 
@@ -498,57 +499,37 @@ td>input {
   margin-bottom: var(--margin-bottom-lg, 1.5em);
 }
 
-/* ⬇️ alignedInputGroup */
-
-.alignedInputGroup, .alignedInputGroup .container, .flexWrapGap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 10px;
-}
-.alignedInputGroup {
-  margin-bottom: var(--margin-bottom-md);
+.whiteSpaceNoWrap {
+  white-space: nowrap;
 }
 
-.alignedInputGroup>:first-child { /* Used to be .alignedInputGroup label but changed it so it could be used for non label elems in e.g. invoice_detail */
-  display: inline-block;
-  width: 150px;
+.fullWidth {
+  width: 100%;
+}
+
+/* ⬇ gridTwoCol */
+
+.gridTwoCol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(min-content, max-content));
+  grid-gap: var(--gap-sm);
+  justify-items: start;
+  align-items: center;
+}
+.gridTwoCol.justifySelfEndOdd > :nth-child(odd) {
+  justify-self: end;
   text-align: right;
+}
+.gridTwoCol .centerSelfY {
   align-self: center;
 }
-.alignedInputGroup.autoWidth>:first-child {
-  display: inline-block;
-  width: auto;
-  text-align: right;
-}
-.alignedInputGroup input { /* didn't change it to .alignedInputGroup>:nth-child(2) because sometimes .container is the 2nd child */
-  align-self:flex-end;
+.justifySelfEnd {
+  justify-self: end;
 }
 
-/* ⬆ alignedInputGroup */
-
-/* ⬇ alignedLabelInput - both label and input */
-
-.alignedLabelInput {
-  display: inline-block;
+.justifySelfStretch {
+  justify-self: stretch;
 }
-
-.alignedLabelInput>.container {
-  display: flex;
-  gap: 0 10px;
-  flex-wrap: wrap;
-  margin-bottom: var(--margin-bottom-md);
-}
-
-.alignedLabelInput>.container>:first-child {
-  align-self: center;
-  flex: 1;
-}
-
-.alignedLabelInput select,.alignedLabelInput input, .alignedLabelInput button {
-  width: 120px;
-}
-
-/* ⬆ alignedLabelInput - both label and input */
 
 /* ⬇ test */
 
@@ -595,18 +576,13 @@ td>input {
     margin-bottom: var(--margin-bottom-lg);
   }
 
-  .alignedInputGroup {
-    display: block;
-  }
-
-  .alignedInputGroup>:first-child {
-    display: block;
-    width: initial;
-    text-align: initial;
-    margin-bottom: var(--margin-bottom-sm);
-  }
-
   .flat-button.pushRight {
     margin-left: unset;
+  }
+
+  .gridTwoCol {
+    grid-template-columns: 1fr;
+    justify-items: start !important;
+    text-align: left !important;
   }
 }
