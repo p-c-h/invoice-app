@@ -3,93 +3,99 @@ extends dashboard
 block main
   style.
 
-    #deleteBtnWrapper {
-      position: relative;
-    }
 
-    #deletePopup {
-      display: none;
-      position: absolute;
-      top: -40px;
-      left: 40px;
-      padding: 20px;
-      border: 1px solid black;
-      background-color: white;
-      z-index: 1;
-    }
 
   - const formatDate = d => [d.getDate().toString().padStart(2, '0'), (d.getMonth() + 1).toString().padStart(2, '0'), d.getFullYear()].join('-')
 
-  div(class='title') Faktura VAT nr: #{invoice.invoiceNumber}/#{month}/#{year}
+  div(class='marginBottom-md') 
+    strong Faktura VAT nr: #{invoice.invoiceNumber}/#{month}/#{year}
   div(class='divider')
 
   div(class='flexContainer')
     div(class='col')
-      div(class='alignedInputGroup autoWidth')
-        div(class='marginBottom-sm')
+      div(class='gridTwoCol')
+        div(class='mbMobile alignSelfStart')
           strong Nabywca:
-        ul(class='marginBottom-md')
+        ul(class='mbMobile')
           li #{invoice.buyer.businessName}
           li #{invoice.buyer.nip}
           li #{invoice.buyer.adress}
           li #{invoice.buyer.areaCode} #{invoice.buyer.city}
+
     div(class='col')
-      div(class='alignedInputGroup')
-        div(class='marginBottom-sm')
+      div(class='gridTwoCol')
+        div(class='mbMobile justifyEndAlignRight')
           strong Data wystawienia:
-        div #{formatDate(invoice.dateCreated)}
-      div(class='alignedInputGroup')
-        div(class='marginBottom-sm')
+        div(class='mbMobile') #{formatDate(invoice.dateCreated)}
+
+        div(class='mbMobile justifyEndAlignRight')
           strong Data sprzedaży:
-        div #{formatDate(invoice.transactionDate)}
-      div(class='alignedInputGroup')
-        div(class='marginBottom-sm') Termin płatności:
-        div #{formatDate(invoice.paymentDue)}
-      div(class='alignedInputGroup')
-        div(class='marginBottom-sm') Miejsce wystawienia faktury:
-        div #{invoice.issuePlace}
+        div(class='mbMobile') #{formatDate(invoice.transactionDate)}
 
-  //- table
-    thead 
-      tr 
-        th Nazwa towaru lub usługi 
-        th GTU 
-        th Ilość
-        th Jednostka 
-        th Cena jedn. #{invoice.priceType}
-        th Wartość #{invoice.priceType}
-        th VAT
-      each item in invoice.invoiceItems
-        tr
-          td #{item.itemName}
-          td #{item.gtu}
-          td #{item.itemQuantity}
-          td #{item.unit}
-          td #{formatPrice(item.singleItemPrice)}
-          td #{formatPrice(item.itemQuantity * item.singleItemPrice)}
-          td #{item.taxRate * 100}%
+        div(class='mbMobile justifyEndAlignRight') Termin płatności:
+        div(class='mbMobile') #{formatDate(invoice.paymentDue)}
 
-  h3 Podsumowanie faktury: 
-  ul 
-    li Razem netto: 
-    li #{formatPrice(invoice.totals.netTotal)} zł
-    li VAT: 
-    li #{formatPrice(invoice.totals.taxTotal)} zł
-    li Razem brutto: 
-    li #{formatPrice(invoice.totals.grossTotal)} zł
+        div(class='mbMobile justifyEndAlignRight') Miejsce wystawienia faktury:
+        div(class='mbMobile') #{invoice.issuePlace}
 
-  p Zapłacono PLN: #{formatPrice(invoice.paid)}
+  div(class='tableOverflowWrapper')
+    table
+      thead 
+        tr 
+          th(class='fullWidth tdAlignLeft') Nazwa towaru lub usługi 
+          th GTU 
+          th Ilość
+          th Jednostka 
+          th Cena jedn. #{invoice.priceType}
+          th Wartość #{invoice.priceType}
+          th VAT
+        each item in invoice.invoiceItems
+          tr
+            td(class='tdAlignLeft') #{item.itemName}
+            td #{item.gtu}
+            td #{item.itemQuantity}
+            td #{item.unit}
+            td #{formatPrice(item.singleItemPrice)}
+            td #{formatPrice(item.itemQuantity * item.singleItemPrice)}
+            td #{item.taxRate * 100}%
+  div(class='divider')
+  div(class='flexContainer')
+    div(class='col')
+      div(class='gridTwoCol')
+        div(class='mbMobile') Sposób zapłaty:
+        div(class='mbMobile') #{invoice.paymentMethod==='transfer' ? 'Przelew' : 'Gotówka' }
 
-  input(type="button" onclick=`window.location='/faktury/${invoice._id}/edytuj'` value="Edytuj")
+        div(class='mbMobile') Zapłacono PLN: 
+        div(class='mbMobile') #{formatPrice(invoice.paid)}
 
-  input(type="button" onclick=`window.location='/faktury/${invoice._id}/pdf'` value="Zapisz PDF")
+    div(class='col small')
+      div(class='marginBottom-md')
+        strong Podsumowanie faktury:
+      ul(class='marginBottom-md')
+        div(class='spaceBetween')
+          li Razem netto:
+          li #{formatPrice(invoice.totals.netTotal)} zł
+        div(class='divider')
+        div(class='spaceBetween')
+          li VAT:
+          li #{formatPrice(invoice.totals.taxTotal)} zł
+        div(class='divider')
+        div(class='spaceBetween')
+          li Razem brutto:
+          li #{formatPrice(invoice.totals.grossTotal)} zł
 
-  div(id="deleteBtnWrapper")
-    button(id="deleteBtn" onclick="showDeletePopup()") Usuń
-    div(id="deletePopup")
-      p Czy na pewno chcesz usunąć?
-      form(action=`/faktury/${year}/${month}/${invoice._id}/usun` method='POST')
-        input(type="button" value="Nie" onclick="this.closest('#deletePopup').setAttribute('style', 'display: none')")
-        input(type="submit" value="Tak")
+      div(class='multipleBtnY')
+        input(type="button" class='flat-button small marginBottom-md' onclick=`window.location='/faktury/${invoice._id}/pdf'` value="Zapisz PDF")
+
+        input(type="button" class='flat-button small marginBottom-md' onclick=`window.location='/faktury/${invoice._id}/edytuj'` value="Edytuj")
+
+        div(class="positionRelative")
+          button(id="deleteBtn" class='flat-button small marginBottom-md fullWidth' onclick="showDeletePopup()") Usuń
+          div(id="deletePopup" class='popup')
+            p Czy na pewno chcesz usunąć?
+            form(action=`/faktury/${year}/${month}/${invoice._id}/usun` method='POST')
+              input(type="button" value="Nie" onclick="this.closest('#deletePopup').setAttribute('style', 'display: none')")
+              input(type="submit" value="Tak")
+
   script. 
     function showDeletePopup() {document.getElementById("deletePopup").setAttribute('style', 'display: block')}
