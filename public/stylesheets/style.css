@@ -54,9 +54,9 @@ table {
   --bg-bone: #F5F5F5;
   --border-light: #ccc;
 
-  --margin-bottom-sm: 0.5em;
-  --margin-bottom-md: 1em;
-  --margin-bottom-lg: 1.5em;
+  --margin-sm: 0.5em;
+  --margin-md: 1em;
+  --margin-lg: 1.5em;
 
   --gap-sm: 0.5em;
   --gap-md: 1em;
@@ -105,7 +105,7 @@ td {
   min-width: 35px;
   height: 35px;
   border: 1px solid rgb(190,190,190);
-  padding: 10px 10px;
+  padding: 10px 20px;
 }
 
 table input{
@@ -126,15 +126,6 @@ strong {
 
 button {
   display: block;
-}
-
-/* label {
-  margin-bottom: 8px;
-} */
-
-label.marginRight {
-  display: inline-block;
-  margin-right: 10px;
 }
 
 input, select {
@@ -288,7 +279,7 @@ select {
 
 .flexContainer .col {
   flex: 1;
-  margin-bottom: var(--margin-bottom-md);
+  margin-bottom: var(--margin-md);
 }
 
 .flexContainer .col.small {
@@ -344,7 +335,7 @@ select {
   display: none;
 }
 
-.reference {
+.positionRelative {
   position: relative;
 }
 
@@ -490,21 +481,20 @@ td>input {
 }
 
 .marginBottom-sm {
-  margin-bottom: var(--margin-bottom-sm, 0.5em);
+  margin-bottom: var(--margin-sm, 0.5em);
 }
 .marginBottom-md {
-  margin-bottom: var(--margin-bottom-md, 0.5em);
+  margin-bottom: var(--margin-md, 0.5em);
 }
 .marginBottom-lg {
-  margin-bottom: var(--margin-bottom-lg, 1.5em);
+  margin-bottom: var(--margin-lg, 1.5em);
+}
+.marginTop-md {
+  margin-top: var(--margin-md, 0.5em);
 }
 
 .whiteSpaceNoWrap {
   white-space: nowrap;
-}
-
-.fullWidth {
-  width: 100%;
 }
 
 /* ⬇ gridTwoCol */
@@ -512,23 +502,34 @@ td>input {
 .gridTwoCol {
   display: grid;
   grid-template-columns: repeat(2, minmax(min-content, max-content));
-  grid-gap: var(--gap-sm);
+  grid-gap: var(--gap-md);
   justify-items: start;
   align-items: center;
 }
-.gridTwoCol.justifySelfEndOdd > :nth-child(odd) {
-  justify-self: end;
-  text-align: right;
+.gridTwoCol.modified {
+  grid-template-columns: max-content min-content;
 }
 .gridTwoCol .centerSelfY {
   align-self: center;
 }
+.alignSelfStart {
+  align-self: start;
+}
 .justifySelfEnd {
   justify-self: end;
 }
-
 .justifySelfStretch {
   justify-self: stretch;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+/* ⬇ marginRight */
+
+.marginRight {
+  margin-right: 0.5em;
 }
 
 /* ⬇ test */
@@ -543,6 +544,16 @@ td>input {
     border-bottom-style: solid;
     padding-top: 18px;
     padding-bottom: 18px;
+  }
+
+
+  .justifyEndAlignRight {
+    justify-self: end;
+    text-align: right;
+  }
+
+  .fullWidthWeb {
+    width: 100%;
   }
 }
 
@@ -573,16 +584,26 @@ td>input {
   }
 
   .flexContainer .col {
-    margin-bottom: var(--margin-bottom-lg);
+    margin-bottom: var(--margin-lg);
   }
 
   .flat-button.pushRight {
     margin-left: unset;
   }
 
+  #popup {
+    padding: 30px 50px;
+  }
+
   .gridTwoCol {
-    grid-template-columns: 1fr;
-    justify-items: start !important;
-    text-align: left !important;
+    display: block;
+  }
+  
+  .mbMobile {
+    margin-bottom: var(--margin-sm);
+  }
+
+  .mbWidthMinContent {
+    width: min-content;
   }
 }
