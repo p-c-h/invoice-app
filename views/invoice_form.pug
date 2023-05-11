@@ -17,43 +17,54 @@ block main
 
   if user.profileComplete === false
     p Uzupełnij profil, aby móc wystawiać faktury.
-    input(type="button" class="flat-button" onclick="location.href='/uzytkownik';" value="Kliknij tu")
+    input(type="button" class="flatButton" onclick="location.href='/uzytkownik';" value="Kliknij tu")
   else
     div(id='overlay')
-    div(id="popup")
-      div(class='marginBottom-lg')
+    div(class="popup")
+      div
         strong Nowy kontrahent:
+      div(class='divider')
       form(action='' method='POST' id="newBuyerForm")
-        div(class='gridTwoCol justifySelfEndOdd')
-          label(for="businessName") Nazwa firmy:
-          input(type="text" name="businessName" id="businessName" value="Name" required)
+        div(class='gridTwoCol marginBottomMd')
+          div(class='mbMobile justifyEndAlignRight')
+            label(for="businessName") Nazwa firmy:
+          div(class='mbMobile')
+            input(type="text" name="businessName" id="businessName" value="Name" required)
 
-          label(for="nip") NIP:
-          input(type="number" name="nip" id="nip" minlength=10 maxlength=10 value="1234567891" required)
+          div(class='mbMobile justifyEndAlignRight')
+            label(for="nip") NIP:
+          div(class='mbMobile')
+            input(type="number" name="nip" id="nip" minlength=10 maxlength=10 value="1234567891" required)
 
-          label(for="adress") Adres:
-          input(type="text" name="adress" id="adress" value="adress" required)
+          div(class='mbMobile justifyEndAlignRight')
+            label(for="adress") Adres:
+          div(class='mbMobile')
+            input(type="text" name="adress" id="adress" value="adress" required)
 
-          label(for="areaCode" class='whiteSpaceNoWrap') Kod pocztowy:
-          input(type="text" name="areaCode" id="areaCode" pattern="[0-9]{2}(-)[0-9]{3}" required)
+          div(class='mbMobile justifyEndAlignRight')
+            label(for="areaCode" class='whiteSpaceNoWrap') Kod pocztowy:
+          div(class='mbMobile')
+            input(type="text" name="areaCode" id="areaCode" pattern="[0-9]{2}(-)[0-9]{3}" required)
 
-          label(for="city") Miejscowość:
-          input(type="text")(for="text" name="city" id="city" value="adress" required)
+          div(class='mbMobile justifyEndAlignRight')
+            label(for="city") Miejscowość:
+          div(class='mbMobile')
+            input(type="text")(for="text" name="city" id="city" value="adress" required)
 
-        div(class='multipleBtnY')
-          button(type="submit" class='flat-button small marginBottom-md' id="confirmPopupBtn") Zatwierdź
-          button(type="button" class='flat-button small' id="closePopupBtn") Anuluj
+        div(class='maxWidthAutoMargins')
+          button(type="submit" class='flatButton small marginBottomMd fullWidth' id="confirmPopupBtn") Zatwierdź
+          button(type="button" class='flatButton small fullWidth' id="closePopupBtn") Anuluj
 
     if monthsArr
       form(action="/miesiac-ksiegowy" method="POST")
-        div(class='flexWrapGap marginBottom-md')
-          label(class='fitContent centerSelf') Miesiąc księgowy:
+        div(class='marginBottomMd')
+          label(class='inlineBlock marginRight') Miesiąc księgowy:
           select(class='selectBig' name="accountingDate" onchange="this.closest('form').submit()")
             each item in monthsArr
               option(value=item.num selected=(item === monthsArr[1])) #{item.word}
 
     form(action='' method='POST' id="invoiceForm" autocomplete="off")
-      div(class='marginBottom-md')
+      div(class='marginBottomMd')
         strong Faktura VAT nr: #{invoice === undefined ? invoiceNumber : invoice.invoiceNumber}/#{month}/#{year}
       input(type='hidden' name="invoiceNumber" value=(invoice === undefined ? invoiceNumber : invoice.invoiceNumber))
       div(class='divider')
@@ -61,55 +72,60 @@ block main
         div(class='col')
           div(class='inline-flex')
             div(class='gridTwoCol')
-              label(for='buyerInput')
-                strong Nabywca:
-              div(id='buyerWrapper' class='justifySelfStretch')
-                input(type="text" id="buyerInput" class='fullWidth' required=(invoice===undefined))
-                div(class='reference')
-                  div(id="dropdown")
-                    div(id="dropdownItems")
-              div
-              button(type="button" id="showPopupBtn" class='flat-button small') + Dodaj nowego kontrahenta
+              div(class='alignSelfStart mbMobile')
+                label(for='buyerInput')
+                  strong Nabywca:
+              div(id='buyerWrapper' class='inlineBlock justifySelfStretch')
+                div(class='marginBottomSm')
+                  input(type="text" id="buyerInput" class='inlineBlock fullWidth' required=(invoice===undefined))
+                  div(class='positionRelative')
+                    div(id="dropdown")
+                      div(id="dropdownItems")
 
-              div
-              ul(id="buyerSpace")
-                if invoice   
-                  li #{invoice.buyer.businessName}
-                  li NIP: #{invoice.buyer.nip}
-                  li #{invoice.buyer.adress}
-                  li #{invoice.buyer.areaCode} #{invoice.buyer.city} 
-              input(type='hidden' name='buyerId' id='buyerId')
+                button(type="button" id="showPopupBtn" class='flatButton small') + Dodaj nowego kontrahenta
+
+                ul(id="buyerSpace" class='marginTopMd')
+                  if invoice   
+                    li #{invoice.buyer.businessName}
+                    li NIP: #{invoice.buyer.nip}
+                    li #{invoice.buyer.adress}
+                    li #{invoice.buyer.areaCode} #{invoice.buyer.city} 
+                input(type='hidden' name='buyerId' id='buyerId')
 
         div(class='col')
           div(class='gridTwoCol justifySelfEndOdd')
 
-            label(for='dateCreated') 
-              strong Data wystawienia:
+            div(class='justifyEndAlignRight mbMobile')
+              label(for='dateCreated') 
+                strong Data wystawienia:
+            div(class='mbMobile')
+              input(type='date' name='dateCreated' id='dateCreated' value=(invoice===undefined ? currentDate : formatDate(invoice.dateCreated)) required)
 
-            input(type='date' name='dateCreated' id='dateCreated' value=(invoice===undefined ? currentDate : formatDate(invoice.dateCreated)) required)
-
-            label(for='transactionDate') 
-              strong Data sprzedaży:
-            div 
+            div(class='justifyEndAlignRight mbMobile')
+              label(for='transactionDate') 
+                strong Data sprzedaży:
+            div(class='mbMobile') 
               input(type='date' name='transactionDate' id='transactionDate' value=(invoice===undefined ? currentDate : formatDate(invoice.transactionDate)) required)
 
-            label(for='paymentDue') Termin płatności:
-            div(class='flexWrapGap')
-              input(type='date' name='paymentDue' id='paymentDue' value=(invoice===undefined ? currentDate : formatDate(invoice.paymentDue)) required)
+            div(class='justifyEndAlignRight mbMobile')
+              label(for='paymentDue') Termin płatności:
+            div(class='mbMobile')
+              input(class='inlineBlock marginRight' type='date' name='paymentDue' id='paymentDue' value=(invoice===undefined ? currentDate : formatDate(invoice.paymentDue)) required)
 
               select(id='postponeSelect' onchange='addDays(this.value)' onfocus="this.selectedIndex = -1")
                 option(value=7 selected) 7 dni
                 option(value=14) 14 dni
                 option(value=30) 1 miesiąc
 
-            label(for='issuePlace') Miejsce wystawienia faktury: 
-            div
+            div(class='justifyEndAlignRight mbMobile')
+              label(for='issuePlace') Miejsce wystawienia faktury: 
+            div(class='mbMobile')
               input(type='text' name='issuePlace' id='issuePlace' value=(invoice===undefined ? user.city : invoice.issuePlace) required)
 
       div(class='tableOverflowWrapper')
         table 
           thead 
-            th(id='widestTH' class='tdAlignLeft') Nazwa towaru lub usługi
+            th(class='fullWidth tdAlignLeft') Nazwa towaru lub usługi
             th GTU
             th Ilość
             th Jednostka
@@ -123,23 +139,29 @@ block main
             th
           tbody(id="tbody")
 
-      button(type='button' class='flat-button small' id="addFsetButton" onclick='addFset()') + Dodaj kolejne pole
+      button(type='button' class='flatButton small' id="addFsetButton" onclick='addFset()') + Dodaj kolejne pole
 
       div(class='divider')
 
       div(class='flexContainer')
         div(class='col')
-          div(class='gridTwoCol')
-            label(for='paymentMethod') Sposób zapłaty:
-            select(name='paymentMethod' id="paymentMethod")
-              option(value="transfer" selected=(invoice===undefined || invoice.paymentMethod==="transfer")) Przelew
-              option(value="cash" selected=(invoice && invoice.paymentMethod==="cash")) Gotówka
+          div(class='gridTwoCol modified mbWidthMinContent')
+            div(class='mbMobile')
+              label(for='paymentMethod' class='whiteSpaceNoWrap') Sposób zapłaty:
+            div(class='mbMobile')
+              select(name='paymentMethod' id="paymentMethod")
+                option(value="transfer" selected=(invoice===undefined || invoice.paymentMethod==="transfer")) Przelew
+                option(value="cash" selected=(invoice && invoice.paymentMethod==="cash")) Gotówka
 
-            label Zapłacono PLN:
-            input(name="paid" type="number" min="0" step="0.01" value=(invoice===undefined ? '0' : invoice.paid))
+            div(class='mbMobile')
+              label(class='whiteSpaceNoWrap') Zapłacono PLN:
+            div(class='mbMobile')
+              input(class='fullWidth' name="paid" type="number" min="0" step="0.01" value=(invoice===undefined ? '0' : invoice.paid))
+
         div(class='col small')
-          h3 Podsumowanie faktury:
-          ul(id="summary")
+          div(class='marginBottomMd')
+            strong Podsumowanie faktury:
+          ul(class='marginBottomMd')
             div(class='spaceBetween')
               li Razem netto:
               li(id="netTotalElem") #{invoice !== undefined ? invoice.totals.netTotal.toFixed(2) : "0.00"}
@@ -157,9 +179,9 @@ block main
           input(type='hidden' name='taxTotal' id='taxTotal' value=(invoice===undefined ? '' : invoice.totals.taxTotal))
           input(type='hidden' name='grossTotal' id='grossTotal' value=(invoice===undefined ? '' : invoice.totals.grossTotal))
 
-          div(class='multipleBtnY')
-            input(type="submit" class='flat-button' id="submitButton" value="Zapisz")
+          div(class='maxWidthAutoMargins')
+            input(type="submit" class='flatButton marginBottomMd fullWidth' id="submitButton" value="Zapisz")
             if invoice
-              input(type="button" class='flat-button' onclick=`location.href="/faktury/${invoice._id}";` value="Anuluj")
+              input(type="button" class='flatButton fullWidth' onclick=`location.href="/faktury/${invoice._id}";` value="Anuluj")
 
   script(defer src='/javascripts/script.js' data-city=user.city)
