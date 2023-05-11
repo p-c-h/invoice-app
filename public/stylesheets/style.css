@@ -157,6 +157,13 @@ select {
   color: #1e6fa0;
 }
 
+.logoHolder {
+  background-color: var(--light-blue);
+}
+.logoHolder a {
+  color: #FFF;
+}
+
 #header {
   display: flex;
   justify-content: space-between;
@@ -246,8 +253,9 @@ select {
 }
 
 .signInBox {
-	max-width: 350px;
-	padding: 50px;
+  display: flex;
+  flex-direction: column;
+	width: 350px;
 	border: 1px solid var(--border-light);
   background-color: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -312,7 +320,7 @@ select {
   z-index: 1;
 }
 
-#popup {
+.popup {
   display: none;
   z-index: 2;
   position: fixed;
@@ -320,8 +328,8 @@ select {
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: white;
-  padding: 20px;
-  border: 1px solid var(--border-light);
+  padding: 20px 40px;
+  border: 2px solid var(--border-light);
 }
 
 #overlay {
@@ -373,7 +381,7 @@ td>input {
 }
 
 /* button styles ⬇️ */
-.flat-button {
+.flatButton {
   padding: 12px 20px;
   border: none;
   border-radius: 4px;
@@ -386,32 +394,28 @@ td>input {
   transition: background-color 0.3s ease;
 }
 
-.flat-button:hover {
+.flatButton:hover {
   background-color: var(--dim-blue);
 }
 
-.flat-button:active {
+.flatButton:active {
   background-color: #1e6fa0;
 }
 
-.flat-button.small {
+.flatButton.small {
   padding: 6px 12px;
   font-size: 14px;
   border-radius: 2px;
 }
 
-.flat-button.pushRight {
+.flatButton.pushRight {
   margin-left: auto;
 }
 
-.multipleBtnY {
+.maxWidthAutoMargins {
   width: max-content;
-  margin: auto;
-  /* flex-direction: column;
-  align-items: center; */
-}
-.multipleBtnY>* {
-  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 #popup .multipleBtnY {
@@ -480,16 +484,16 @@ td>input {
   display: inline-block;
 }
 
-.marginBottom-sm {
+.marginBottomSm {
   margin-bottom: var(--margin-sm, 0.5em);
 }
-.marginBottom-md {
+.marginBottomMd {
   margin-bottom: var(--margin-md, 0.5em);
 }
-.marginBottom-lg {
+.marginBottomLg {
   margin-bottom: var(--margin-lg, 1.5em);
 }
-.marginTop-md {
+.marginTopMd {
   margin-top: var(--margin-md, 0.5em);
 }
 
@@ -524,6 +528,11 @@ td>input {
 
 .fullWidth {
   width: 100%;
+}
+
+.marginAuto {
+  margin-right: auto;
+  margin-left: auto;
 }
 
 /* ⬇ marginRight */
@@ -587,7 +596,7 @@ td>input {
     margin-bottom: var(--margin-lg);
   }
 
-  .flat-button.pushRight {
+  .flatButton.pushRight {
     margin-left: unset;
   }
 
