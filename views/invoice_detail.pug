@@ -7,7 +7,7 @@ block main
 
   - const formatDate = d => [d.getDate().toString().padStart(2, '0'), (d.getMonth() + 1).toString().padStart(2, '0'), d.getFullYear()].join('-')
 
-  div(class='marginBottom-md') 
+  div(class='marginBottomMd') 
     strong Faktura VAT nr: #{invoice.invoiceNumber}/#{month}/#{year}
   div(class='divider')
 
@@ -69,9 +69,9 @@ block main
         div(class='mbMobile') #{formatPrice(invoice.paid)}
 
     div(class='col small')
-      div(class='marginBottom-md')
+      div(class='marginBottomMd')
         strong Podsumowanie faktury:
-      ul(class='marginBottom-md')
+      ul(class='marginBottomMd')
         div(class='spaceBetween')
           li Razem netto:
           li #{formatPrice(invoice.totals.netTotal)} zł
@@ -83,19 +83,20 @@ block main
         div(class='spaceBetween')
           li Razem brutto:
           li #{formatPrice(invoice.totals.grossTotal)} zł
+  div(class='divider')
+  div(class='flexWrapGap noMarginBottom')
+    input(type="button" class='flatButton small marginBottomMd' onclick=`window.location='/faktury/${invoice._id}/pdf'` value="Zapisz PDF")
 
-      div(class='multipleBtnY')
-        input(type="button" class='flat-button small marginBottom-md' onclick=`window.location='/faktury/${invoice._id}/pdf'` value="Zapisz PDF")
+    input(type="button" class='flatButton small marginBottomMd' onclick=`window.location='/faktury/${invoice._id}/edytuj'` value="Edytuj")
 
-        input(type="button" class='flat-button small marginBottom-md' onclick=`window.location='/faktury/${invoice._id}/edytuj'` value="Edytuj")
+    button(id="deleteBtn" class='flatButton small marginBottomMd' onclick="showDeletePopup()") Usuń
 
-        div(class="positionRelative")
-          button(id="deleteBtn" class='flat-button small marginBottom-md fullWidth' onclick="showDeletePopup()") Usuń
-          div(id="deletePopup" class='popup')
-            p Czy na pewno chcesz usunąć?
-            form(action=`/faktury/${year}/${month}/${invoice._id}/usun` method='POST')
-              input(type="button" value="Nie" onclick="this.closest('#deletePopup').setAttribute('style', 'display: none')")
-              input(type="submit" value="Tak")
+    div(id="deletePopup" class='popup')
+      div(class='marginBottomLg') Czy na pewno chcesz usunąć?
+      form(action=`/faktury/${year}/${month}/${invoice._id}/usun` method='POST')
+        div(class='flexWrapGap center')
+          input(type="button" class='flatButton small' value="Nie" onclick="this.closest('#deletePopup').setAttribute('style', 'display: none')")
+          input(type="submit" class='flatButton small' value="Tak")
 
   script. 
     function showDeletePopup() {document.getElementById("deletePopup").setAttribute('style', 'display: block')}
