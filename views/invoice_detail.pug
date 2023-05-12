@@ -38,7 +38,7 @@ block main
         div(class='mbMobile justifyEndAlignRight') Miejsce wystawienia faktury:
         div(class='mbMobile') #{invoice.issuePlace}
 
-  div(class='tableOverflowWrapper')
+  div(class='tableOverflowWrapper marginBottomMd')
     table
       thead 
         tr 
@@ -58,7 +58,7 @@ block main
             td #{formatPrice(item.singleItemPrice)}
             td #{formatPrice(item.itemQuantity * item.singleItemPrice)}
             td #{item.taxRate * 100}%
-  div(class='divider')
+
   div(class='flexContainer')
     div(class='col')
       div(class='gridTwoCol')
