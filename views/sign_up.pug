@@ -1,23 +1,22 @@
 extends layout
 
 block content
-  div(class='center padding')
-    div(class='signInBox')
+  div(class='signInBox marginTopMd marginAuto')
+    div(class='logoHolder center marginBottomLg')
       a(class='logo' href='/') Fakturownia
-      form(action='' method='POST')
-        if errors 
-          ul(class='error') 
-            for error in errors 
-              li!=error.msg
-        if message
-          p(class='error') #{message}
 
-        label(for='username') Wybierz nazwę użytkownika
+    div(class='width60 marginAuto')
+      form(action='' method='POST')
+        if typeof message!==undefined 
+          p(class='errormarginBottomLg block') #{message}
+
+        label(for='username' class='marginBottomSm block') Wybierz nazwę użytkownika
           span(aria-label='required') *
-        input(class='signInInput' type='text' name='username' required value=username)
-        label(for='password') Hasło
+        input(class='signInInput' type='text' name='username' class='marginBottomLg block fullWidth' required value=username)
+        label(for='password' class='marginBottomSm block') Hasło
           span(aria-label='required') * 
           | (musi mieć conajmniej 6 znaków)
-        input(class='signInInput' type='password' name='password' minlength='6' maxlength='18' required)
-        button(type='submit' class="flat-button") Utwórz konto
-        a(href='/') Zaloguj się
+        input(class='signInInput' type='password' name='password' class='marginBottomLg block fullWidth' minlength='6' maxlength='18' required)
+        div(class='text-center')
+          button(type='submit' class="flatButton marginBottomMd block marginAuto") Utwórz konto
+          a(href='/') Zaloguj się
