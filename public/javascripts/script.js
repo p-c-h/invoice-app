@@ -6,7 +6,7 @@
 const newBuyerForm = document.getElementById("newBuyerForm");
 const showPopupBtn = document.getElementById("showPopupBtn");
 const overlay = document.getElementById("overlay");
-const popup = document.getElementById("popup");
+const popup = document.querySelector(".popup");
 const confirmPopupBtn = document.getElementById("confirmPopupBtn");
 const closePopupBtn = document.getElementById("closePopupBtn");
 
