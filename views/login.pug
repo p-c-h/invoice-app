@@ -1,28 +1,27 @@
 extends layout
 
 block content
-  div(class='center padding')
-    div(class='signInBox')
+  div(class='signInBox marginTopMd marginAuto')
+    div(class='logoHolder center marginBottomLg')
       a(class='logo' href='/') Fakturownia
+
+    div(class='width60 marginAuto')
       form(action='/log-in' method='POST')
-        if message
-          p(class='error') #{message}
-        label(for='username') Nazwa użytkownika:
-        input(type='text' class='signInInput' name='username' required='true')
-        label(for='password') Hasło:
-        input(type='password' class='signInInput' name='password' required='true')
-        button(type='submit' class='flat-button') Zaloguj się
-        p
-          a(href='#' onclick='loginToDemo()') Zaloguj się
-          br
-          |  na konto demonstracyjne.
-      br
-      a(href='/rejestracja') Utwórz konto
-      if errors
-        ul 
-          for error in errors 
-            li!= error.msg
-      // including HTML as text in a Pug/Jade file will parse into Pug:
-      | <script>function loginToDemo() {document.querySelector('[name="username"]').value = 'pepe'; document.querySelector('[name="password"]').value = 'frogger'; document.querySelector('form').submit()};</script>
+        if typeof message!==undefined
+          p(class='error marginBottomLg block') #{message}
+        label(for='username' class='marginBottomSm block') Nazwa użytkownika:
+        input(type='text' class='signInInput marginBottomLg block fullWidth' name='username' required='true')
+        label(for='password' class='marginBottomSm block') Hasło:
+        input(type='password' class='signInInput marginBottomLg block fullWidth' name='password' required='true')
+
+        button(type='submit' class='flatButton marginBottomLg block marginAuto') Zaloguj się
+
+        div(class='text-center')
+          span(class='marginBottomLg block')
+            a(href='#' onclick='loginToDemo()' class='marginBottomMd') Zaloguj się
+            |  na konto demonstracyjne.
+          a(href='/rejestracja') Utwórz konto
+    // including HTML as text in a Pug/Jade file will parse into Pug:
+    | <script>function loginToDemo() {document.querySelector('[name="username"]').value = 'pepe'; document.querySelector('[name="password"]').value = 'frogger'; document.querySelector('form').submit()};</script>
 
 
