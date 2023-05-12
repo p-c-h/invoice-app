@@ -159,9 +159,13 @@ select {
 
 .logoHolder {
   background-color: var(--light-blue);
+  padding: 30px;
 }
 .logoHolder a {
   color: #FFF;
+}
+.logoHolder a:hover {
+  color: #EEE;
 }
 
 #header {
@@ -237,6 +241,10 @@ select {
   text-align: left;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .center {
 	display: flex;
 	justify-content: center;
@@ -253,12 +261,11 @@ select {
 }
 
 .signInBox {
-  display: flex;
-  flex-direction: column;
-	width: 350px;
+	width: 300px;
 	border: 1px solid var(--border-light);
   background-color: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  padding-bottom: 40px;
 }
 
 .signInInput {
@@ -480,6 +487,10 @@ td>input {
   color: var(--light-blue);
 }
 
+.block {
+  display: block;
+}
+
 .inlineBlock {
   display: inline-block;
 }
@@ -528,6 +539,10 @@ td>input {
 
 .fullWidth {
   width: 100%;
+}
+
+.width60 {
+  width: 60%;
 }
 
 .marginAuto {
