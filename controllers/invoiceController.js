@@ -372,6 +372,8 @@ exports.invoice_pdf = function (req, res, next) {
         paymentMethod,
         priceType,
         invoiceItems,
+        totals,
+        paid,
       } = result;
 
       const month = result.transactionDate.getMonth() + 1;
@@ -588,24 +590,28 @@ exports.invoice_pdf = function (req, res, next) {
                   { text: "Razem:", style: "tableText", bold: true },
                   "",
                   {
-                    text: `${formatPrice(result.totals.netTotal)}`,
+                    text: `${formatPrice(totals.netTotal)}`,
                     style: "tableText",
                     bold: true,
                   },
                   {
-                    text: `${formatPrice(result.totals.taxTotal)}`,
+                    text: `${formatPrice(totals.taxTotal)}`,
                     style: "tableText",
                     bold: true,
                   },
                   {
-                    text: `${formatPrice(result.totals.grossTotal)}`,
+                    text: `${formatPrice(totals.grossTotal)}`,
                     style: "tableText",
                     bold: true,
                   },
                 ],
                 [
                   { text: "Zapłacono:", style: "tableText", bold: true },
-                  { colSpan: 4, text: "0,00", style: "tableText" },
+                  {
+                    colSpan: 4,
+                    text: `${formatPrice(paid)}`,
+                    style: "tableText",
+                  },
                   "",
                   "",
                   "",
@@ -616,7 +622,11 @@ exports.invoice_pdf = function (req, res, next) {
                     style: "tableText",
                     bold: true,
                   },
-                  { colSpan: 4, text: "184,50", style: "tableText" },
+                  {
+                    colSpan: 4,
+                    text: `${formatPrice(totals.grossTotal - paid)}`,
+                    style: "tableText",
+                  },
                   "",
                   "",
                   "",
@@ -712,7 +722,7 @@ exports.invoice_pdf = function (req, res, next) {
       pdfDoc.getBuffer((buffer) => {
         res.writeHead(200, {
           "Content-Type": "application/pdf",
-          "Content-Disposition": "attachment; filename=hello-world.pdf",
+          "Content-Disposition": `attachment; filename=faktura_${invoiceNumber}_${month}_${year}.pdf`,
           "Content-Length": buffer.length,
         });
         res.end(buffer);
