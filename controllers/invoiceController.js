@@ -56,14 +56,6 @@ exports.invoice_create_get = (req, res, next) => {
 
   let invoiceNumber;
 
-  ///// MOCK DATA :
-  const invoiceData = {
-    animal: "cat",
-  };
-  const dateCreated = "1999-10-01";
-  const transactionDate = "1999-10-01";
-  /////
-
   async.parallel(
     [
       function (callback) {
@@ -104,17 +96,11 @@ exports.invoice_create_get = (req, res, next) => {
 
       res.render("invoice_form", {
         user: req.user,
-        dateCreated,
-        transactionDate,
-        ////////
         buyerList: results[1],
         invoiceNumber,
-        whatIsThis: results,
         month: month + 1,
         year,
         monthsArr: adjacent(accountingDate),
-        ////////
-        cat: null,
         accountingDate,
         isInvoiceForm: true,
       });
@@ -155,7 +141,17 @@ const invoiceValidators = [
     .notEmpty()
     .trim()
     .escape()
-    .withMessage('Pole: "Data sprzedaży" musi być uzupełnione.'),
+    .withMessage('Pole: "Data sprzedaży" musi być uzupełnione.')
+    .custom((value, { req }) => {
+      const td = new Date(value);
+      const ad = new Date(req.user.accountingDate);
+      if (td.getMonth() !== ad.getMonth()) {
+        throw new Error(
+          `Data sprzedaży musi być zgodna z miesiącem i rokiem księgowym.`
+        );
+      }
+      return true;
+    }),
   body("paymentDue")
     .notEmpty()
     .trim()
@@ -278,22 +274,6 @@ exports.invoice_create_post = [
         }
       });
     });
-
-    // if (typeof req.params.invoiceId !== "undefined") {
-    //   invoice._id = req.params.invoiceId;
-    //   Invoice.findByIdAndUpdate(
-    //     req.params.invoiceId,
-    //     invoice,
-    //     {},
-    //     (err, theivoice) => {
-    //       if (err) {
-    //         return next(err);
-    //       }
-    //       res.redirect(`/faktury/${req.params.invoiceId}`);
-    //     }
-    //   );
-    //   return;
-    // }
   },
 ];
 
@@ -729,255 +709,6 @@ exports.invoice_pdf = function (req, res, next) {
       });
     }
   );
-
-  // const formatDate = (d) =>
-  //   [
-  //     d.getDate().toString().padStart(2, "0"),
-  //     (d.getMonth() + 1).toString().padStart(2, "0"),
-  //     d.getFullYear(),
-  //   ].join("-");
-
-  // const doc = new PDFDocument();
-
-  // // http://pdfkit.org/demo/browser.html
-
-  // res.setHeader("Content-Disposition", 'attachment; filename="my-file.pdf"');
-
-  // Invoice.findOne({ _id: req.params.invoiceId, userId: req.user._id }).exec(
-  //   (err, result) => {
-  //     if (err) {
-  //       return next(err);
-  //     }
-  //     const {
-  //       dateCreated,
-  //       invoiceNumber,
-  //       transactionDate,
-  //       paymentMethod,
-  //       paymentDue,
-  //     } = result;
-
-  //     const month = result.transactionDate.getMonth() + 1;
-  //     const year = result.transactionDate.getFullYear();
-
-  //     const fontsPath = path.join(__dirname, "..", "fonts");
-  //     const fontPath = path.join(fontsPath, "Roboto-Regular.ttf");
-
-  //     doc.registerFont("Roboto", fontPath);
-
-  //     doc.font("Roboto");
-  //     doc.y = 30;
-  //     doc
-  //       .fontSize(8)
-  //       .text(`Wystawiono dnia ${formatDate(dateCreated)}, Kielce`);
-  //     doc.moveDown();
-
-  //     let xPos = (doc.x = 300);
-  //     doc
-  //       .fontSize(12)
-  //       .text(`Faktura VAT nr ${invoiceNumber + "/" + month + "/" + year}`)
-  //       .moveDown(0.5);
-  //     let yPos = doc.y;
-  //     let offset = 150;
-
-  //     doc.text("Data sprzedaży:");
-
-  //     doc.text(formatDate(transactionDate), xPos + offset, yPos);
-  //     yPos = doc.y;
-
-  //     doc.text("Sposób zapłaty:", xPos);
-
-  //     doc.text(
-  //       paymentMethod === "transfer" ? "Przelew" : "Gotówka",
-  //       xPos + offset,
-  //       yPos
-  //     );
-
-  //     yPos = doc.y;
-  //     doc.text("Termin płatności:", xPos);
-  //     doc
-  //       .text(`${formatDate(paymentDue)}`, xPos + offset, yPos)
-
-  //       .moveDown(0.5);
-
-  //     xPos = doc.x = 72;
-  //     yPos = doc.y;
-  //     offset = 250;
-  //     doc.fontSize(16).text("Sprzedawca:");
-  //     doc.text("Nabywca:", xPos + offset, yPos).moveDown(0.5);
-  //     yPos = doc.y;
-  //     doc.fontSize(12).text("businessName", xPos);
-  //     doc.text("businessName2", xPos + offset, yPos);
-  //     yPos = doc.y;
-  //     doc.text("adress", xPos);
-  //     doc.text("adress2", xPos + offset, yPos);
-  //     yPos = doc.y;
-  //     doc.text("areaCode + city", xPos);
-  //     doc.text("areaCode2 + city2", xPos + offset, yPos);
-  //     yPos = doc.y;
-  //     doc.text("NIP", xPos);
-  //     doc.text("NIP2", xPos + offset, yPos).moveDown(0.5);
-  //     doc.fontSize(16).text("Pozycje faktury", xPos).moveDown(0.5);
-
-  //     let lp = 1;
-  //     const { invoiceItems, priceType } = result;
-  //     invoiceItems.forEach((item) => {
-  //       item.lp = lp++;
-  //       item.singleItemPrice =
-  //         item.singleItemPrice.toFixed(2) + " " + item.priceType;
-  //       item.value =
-  //         (item.singleItemPrice * item.itemQuantity).toFixed(2) +
-  //         " " +
-  //         item.priceType;
-  //       item.taxRate = item.taxRate * 100 + "%";
-  //     });
-
-  //     let table = {
-  //       headers: [
-  //         { label: "Lp.", property: "lp", width: 20, renderer: null },
-  //         {
-  //           label: "Nazwa towaru lub usługi",
-  //           property: "itemName",
-  //           width: 150,
-  //           renderer: null,
-  //         },
-  //         {
-  //           label: "Ilość",
-  //           property: "itemQuantity",
-  //           width: 100,
-  //           renderer: null,
-  //         },
-  //         { label: "Jedn.", property: "unit", width: 100, renderer: null },
-  //         {
-  //           label: "Cena",
-  //           property: "singleItemPrice",
-  //           width: 100,
-  //           renderer: null,
-  //         },
-  //         { label: "Wartość", property: "value", width: 100, renderer: null },
-  //         {
-  //           label: "Stawka VAT",
-  //           property: "taxRate",
-  //           width: 100,
-  //           renderer: null,
-  //         },
-  //       ],
-  //       datas: invoiceItems,
-  //     };
-
-  //     doc.table(table, {
-  //       prepareHeader: () => doc.font("Roboto").fontSize(8),
-  //       prepareRow: () => doc.font("Roboto").fontSize(8),
-  //     });
-
-  //     doc.fontSize(16).text("Podsumowanie", xPos).moveDown(0.5);
-
-  //     const obj = {};
-  //     const arr = [];
-
-  //     function round(num) {
-  //       return (Math.round((num + Number.EPSILON) * 100) / 100).toFixed(2);
-  //     }
-
-  //     invoiceItems.forEach((item) => {
-  //       if (obj.hasOwnProperty(item.taxRate)) {
-  //         obj[item.taxRate] += item.singleItemPrice * item.itemQuantity;
-  //       } else {
-  //         obj[item.taxRate] =
-  //           Number(item.singleItemPrice) * Number(item.itemQuantity);
-  //       }
-  //     });
-
-  //     for (n = 0; n < Object.keys(obj).length; n++) {
-  //       const taxRate = Object.keys(obj)[n];
-  //       const fsetNet =
-  //         priceType === "netto"
-  //           ? Object.values(obj)[n]
-  //           : round(Object.values(obj)[n] / (1 + Number(taxRate)));
-  //       const fsetTax = round(fsetNet * taxRate);
-  //       const fsetGross = (Number(fsetNet) + Number(fsetTax)).toFixed(2);
-
-  //       arr.push({
-  //         description: " ",
-  //         taxRate: `${taxRate * 100}%`,
-  //         fsetNet,
-  //         fsetTax,
-  //         fsetGross,
-  //       });
-  //     }
-
-  //     arr.push({
-  //       description: "bold:Razem:",
-  //       taxRate: " ",
-  //       fsetNet: `bold:${result.totals.netTotal.toFixed(2)}`,
-  //       fsetTax: `bold:${result.totals.taxTotal.toFixed(2)}`,
-  //       fsetGross: `bold:${result.totals.grossTotal.toFixed(2)}`,
-  //     });
-
-  //     table = {
-  //       headers: [
-  //         {
-  //           label: " ",
-  //           property: "description",
-  //           width: 80,
-  //           renderer: null,
-  //           headerAlign: "center",
-  //           align: "right",
-  //         },
-  //         {
-  //           label: "Stawka VAT",
-  //           property: "taxRate",
-  //           width: 100,
-  //           renderer: null,
-  //           headerAlign: "center",
-  //           align: "center",
-  //         },
-  //         {
-  //           label: "Wartość netto",
-  //           property: "fsetNet",
-  //           width: 100,
-  //           renderer: null,
-  //           headerAlign: "right",
-  //           align: "right",
-  //         },
-  //         {
-  //           label: "VAT",
-  //           property: "fsetTax",
-  //           width: 100,
-  //           renderer: null,
-  //           headerAlign: "right",
-  //           align: "right",
-  //         },
-  //         {
-  //           label: "Wartość brutto",
-  //           property: "fsetGross",
-  //           width: 100,
-  //           renderer: null,
-  //           headerAlign: "right",
-  //           align: "right",
-  //         },
-  //       ],
-  //       datas: arr,
-  //     };
-
-  //     doc.table(table, {
-  //       prepareHeader: () => doc.font("Roboto").fontSize(11),
-  //       prepareRow: () => doc.font("Roboto").fontSize(10),
-  //     });
-
-  //     // // A4 595.28 x 841.89 (portrait) (about width sizes)
-  //     // // width
-  //     // doc.table(table, {
-  //     //   columnsSize: [20, 150, 50, 50, 50, 50, 50],
-  //     //   prepareHeader: () => doc.font("Roboto").fontSize(8),
-  //     //   prepareRow: () => doc.font("Roboto").fontSize(8),
-  //     // });
-  //     // done!
-  //     doc.pipe(res);
-  //     doc.end();
-  //   }
-  // );
-
-  // Note that the default page size in PDFKit is letter size (8.5 x 11 inches), which corresponds to 612 x 792 points. However, you can also set a custom page size using the doc.page.size property, which accepts an array of two values representing the width and height of the page in points. For example:
 };
 
 exports.invoice_update_get = function (req, res, next) {
@@ -1041,20 +772,10 @@ exports.invoice_update_post = [
     } = req.body;
 
     // ⬇️ Don't want to update user details
-    // const { businessName, nip, adress, areaCode, city, bankAccountNumber } =
-    //   req.user;
 
     const invoice = new Invoice({
       _id: req.params.invoiceId,
       userId: req.user._id,
-      // userDetails: {
-      //   businessName,
-      //   nip,
-      //   adress,
-      //   areaCode,
-      //   city,
-      //   bankAccountNumber,
-      // },
       invoiceNumber,
       dateCreated,
       transactionDate,
