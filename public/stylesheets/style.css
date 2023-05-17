@@ -116,6 +116,17 @@ table input{
   width: 100%; /* makes the invoice item th the widest when in web view */
 }
 
+input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+               -webkit-appearance: none;
+                margin: 0;
+        }
+ 
+        input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
 h3 {
   margin-top: 0;
 }
