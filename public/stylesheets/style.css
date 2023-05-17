@@ -556,8 +556,6 @@ td>input {
   margin-right: 0.5em;
 }
 
-/* ⬇ test */
-
 @media (min-width: 601px) {
   .menuItem:hover, .active {
     background-color: #eff5fb;
