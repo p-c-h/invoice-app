@@ -11,14 +11,12 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  //
   firstName: {
     type: String,
   },
   surname: {
     type: String,
   },
-  //
   businessName: {
     type: String,
   },
