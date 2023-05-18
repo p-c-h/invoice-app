@@ -78,8 +78,4 @@ router.post("/uzytkownik", user_controller.user_detail_update_post);
 
 router.post("/miesiac-ksiegowy", user_controller.user_accountingdate_update);
 
-router.get("/test", test_controller.test_create_get);
-
-router.post("/test", test_controller.test_create_post);
-
 module.exports = router;
