@@ -13,16 +13,6 @@ const User = require("../models/user");
 
 router.get("/", function (req, res, next) {
   if (req.user) {
-    // User.findOne({ username: req.user.username }, (err, results) => {
-    //   if (err) {
-    //     return next(err);
-    //   }
-
-    //   res.render("invoice_list", {
-    //     title: "Lista faktur",
-    //     user: results,
-    //   });
-    // }).lean();
     const accountingDate = req.user.accountingDate;
     const year = accountingDate.getFullYear();
     const month = accountingDate.getMonth();
