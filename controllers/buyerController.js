@@ -39,7 +39,6 @@ exports.buyer_create_post = [
         return next(err);
       }
       return res.json(buyer);
-      // 👆 The res.json({ buyer }); line of code is constructing a JSON object with a key of "buyer" and a value of the buyer object. This is why the resulting JSON has the structure { buyer: { ... }} instead of just { ... }. You could simply change the line to res.json(buyer); if you prefer the latter structure.
     });
   },
 ];
